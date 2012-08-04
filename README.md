@@ -91,7 +91,12 @@ You can also use the 'get' expression to access a property of an object.
 You can 'set' variables too.
 
 ```lisp
+(set name "John")
 (set window.onload (function () (alert "Page Loaded")))
+; You can set array indices using the three argument version of set
+(var foo [])
+(set 1 foo "hello")  => foo[1] = "hello";
+(set "bar" foo "hello") => foo["bar'] = "hello";
 ```
 
 The node server example in LispyScript.
