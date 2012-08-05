@@ -1,6 +1,6 @@
 # LispyScript
 
-## A Javascript with Macros!
+## A Javascript with Lispy syntax and Macros!
 
 Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
 
@@ -276,11 +276,14 @@ will be called in case an exception is thrown. The function is called with the e
 
 ### (template (argument expression) (string expressions) ... )
 
-```lisp
-(var link
-  (template (data)
-    "<li><a href=" (.href data) ">" (.text data) "</a></li>\n"))
+template takes a list of arguments to be passed to the template as the first argument. The rest of the arguments are string expressions that make up the template. Template returns a compiled template function which you must call with the arguments to expand the template.
 
+### (template-repeat (array/object expression) (string expressions) ... )
+
+template repeat takes an array or object as its first argument and the rest are string expressions that form the template. The template is iterated over for every element of the array/object and the combined expanded template is returned. Within the template you can access the current element as 'elem' and the current index as 'index'.
+Note that while 'template returns a compiled template, template repeat returns the actual expanded template.
+
+```lisp
 (var page
   (template (title links)
 "<!DOCTYPE html>
@@ -291,14 +294,15 @@ will be called in case an exception is thrown. The function is called with the e
 <body>
 <ul class='nav'>"
 
-(reduce links (function (memo elem) (+ memo (link elem))) "")
+(template-repeat links "<li><a href=" (.href elem) ">" (.text elem) "</a></li>\n")
 
 "</ul>
 </body>
 </html>"))
 
 (console.log
-  (page "My Home Page"
+  (page
+    "My Home Page"
     [{href:"/about", text:"About"},
      {href:"/products", text:"Products"},
      {href:"/contact", text:"Contact"}]))
@@ -315,6 +319,22 @@ Comments in LispyScript start with a `;` and span the rest of the line.
 ### LispyScript was inspired by [Beating the averages](http://www.paulgraham.com/avg.html).
 
 ### Discuss LispyScript at [https://groups.google.com/forum/#!forum/lispyscript](https://groups.google.com/forum/#!forum/lispyscript).
+
+## Change Log
+
+### Version 0.1.8, 6 Aug, 2012
+
+Added 'template-repeat'.  
+Added setting array/object elements.  
+Added chatserver example.  
+Added a simple Twitter example using expressjs and lispyscript templates.  
+Changed comments from "#" to ";".  
+Made LispyScript browser compliant.  
+Simplified LispyScript installation.  
+Added suport for stdin -> compile -> stdout.  
+
+
+### Initial Release, Version 0.1.6, Jun 20, 2012
 
 [nodejs]:http://nodejs.org/
 [npm]:http://npmjs.org/ "Node Package Manager"

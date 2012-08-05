@@ -55,3 +55,9 @@
 (macro template (args rest...)
   (function ~args
     (str ~rest...)))
+
+(macro template-repeat (arg rest...)
+  (reduce ~arg
+    (function (memo elem index)
+      (+ memo ((template (elem index) ~rest...) elem index))) ""))
+    
