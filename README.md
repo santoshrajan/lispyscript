@@ -320,19 +320,23 @@ Comments in LispyScript start with a `;` and span the rest of the line.
 
 ### Discuss LispyScript at [https://groups.google.com/forum/#!forum/lispyscript](https://groups.google.com/forum/#!forum/lispyscript).
 
+## Contributors
+
+Santosh Rajan [santoshrajan](https://github.com/santoshrajan).  
+Irakli Gozalishvili [Gozala](https://github.com/Gozala).  
+
 ## Change Log
 
 ### Version 0.1.8, 6 Aug, 2012
 
+Changed comments from "#" to ";".  
+Made LispyScript browser compliant.  
+Simplified LispyScript installation.  
+Added support for stdin -> compile -> stdout.  
 Added 'template-repeat'.  
 Added setting array/object elements.  
 Added chatserver example.  
 Added a simple Twitter example using expressjs and lispyscript templates.  
-Changed comments from "#" to ";".  
-Made LispyScript browser compliant.  
-Simplified LispyScript installation.  
-Added suport for stdin -> compile -> stdout.  
-
 
 ### Initial Release, Version 0.1.6, Jun 20, 2012
 
