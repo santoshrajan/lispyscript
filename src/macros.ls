@@ -77,4 +77,3 @@
         (set ret (+ ret (str ~rest...)))))
     ret))
 
-    
