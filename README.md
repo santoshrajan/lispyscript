@@ -291,29 +291,58 @@ Note that while 'template' returns a compiled template, 'template-repeat' return
 template-repeat-key takes an object as its first argument and the rest are string expressions that form the template. The template is iterated over for every key value pair of the object and the combined expanded template is returned. Within the template you can access the current value as 'value' and the current key as 'key'.
 Note that while 'template' returns a compiled template, 'template-repeat-key' returns the actual expanded string.
 
+### HTML Templates
+
+See Lispysript has a tree structure just like html, we can write html in our
+templates in a Lispy manner. By including the 'html.ls' module you write
+HTML Templates like below.
+
 ```lisp
+(include "html.ls")
+
 (template page (title links)
-"<!DOCTYPE html>
-<html>
-<head>
-  <title>" title "</title>
-</head>
-<body>
-<ul class='nav'>"
+  (doctype "html")
+  (html {lang:"en"}
+    (head
+      (title title)
+      (script {type:"text/javascript", src:"js/test.js"}))
+    (body
+      (div {class:"navigation"}
+        (ul
+          (template-repeat links 
+            (li "<a href=\"" elem.href "\">" elem.text "</a>"))))
+      (h1 "HTML Templates")
+      (p "Welcome to LispyScript HTML templates!"))))
+     
+And below you can see the beautified html output.
 
-(template-repeat links "<li><a href=" (.href elem) ">" (.text elem) "</a></li>\n")
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+        <title>My Home Page</title>
+        <script type="text/javascript" src="js/test.js"></script>
+    </head>
+    
+    <body>
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="/about">About</a>
+                </li>
+                <li>
+                    <a href="/products">Products</a>
+                </li>
+                <li>
+                    <a href="/contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <h1>HTML Templates</h1>
+        <p>Welcome to LispyScript HTML templates!</p>
+    </body>
 
-"</ul>
-</body>
-</html>")
-
-(console.log
-  (page
-    "My Home Page"
-    [{href:"/about", text:"About"},
-     {href:"/products", text:"Products"},
-     {href:"/contact", text:"Contact"}]))
-```
+</html>```
 
 ### (include "string filename")
 
