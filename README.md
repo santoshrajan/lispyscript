@@ -276,6 +276,7 @@ will be called in case an exception is thrown. The function is called with the e
     (console.log (+ "Cannot write file " outfile)
     (process.exit 1)))
 ```
+## Templates
 
 ### (template name (argument expression) (string expressions) ... )
 
@@ -293,7 +294,7 @@ Note that while 'template' returns a compiled template, 'template-repeat-key' re
 
 ### HTML Templates
 
-See Lispysript has a tree structure just like html, we can write html in our
+Lispysript has a tree structure just like html, we can write html in our
 templates in a Lispy manner. By including the 'html.ls' module you write
 HTML Templates like below.
 
@@ -342,7 +343,8 @@ And below you can see the beautified html output.
         <p>Welcome to LispyScript HTML templates!</p>
     </body>
 
-</html>```
+</html>
+```
 
 ### (include "string filename")
 
