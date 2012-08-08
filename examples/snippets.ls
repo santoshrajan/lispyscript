@@ -58,8 +58,8 @@
   (template (data)
     "<li><a href=" (.href data) ">" (.text data) "</a></li>\n"))
 
-(var page 
-  (template (title links)
+
+(template page (title links)
 
 "<!DOCTYPE html>
 <html>
@@ -73,7 +73,7 @@
 
 "</ul>
 </body>
-</html>"))
+</html>")
 
 (console.log 
   (page "My Home Page" 

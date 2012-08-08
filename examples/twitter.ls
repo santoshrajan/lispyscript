@@ -9,8 +9,8 @@
 ;; Templates we will be using
 ;; Base template common to all pages.
 ;; Note that strings in lispyscript are multiline.
-(var base
-  (template (title header body)
+
+(template base (title header body)
 "<!DOCTYPE html>
 <html>
 <head>
@@ -20,18 +20,18 @@
   <h1>" header "</h1>"
   body
 "</body>
-</html>"))
+</html>")
 
 ;; index page template. (the body part)
-(var index
-  (template ()
+
+(template index ()
 "<h2>Enter Tweet</h2>
 <form action='/send' method='POST'>
   <input type='text' length='140' name='tweet'/>
   <input type='submit' value='Tweet'/>
 </form>
 <h2>All Tweets</h2>"
-(template-repeat tweets "<div>" elem "</div>")))
+(template-repeat tweets "<div>" elem "</div>"))
 
 
 (var tweets [])
