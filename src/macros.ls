@@ -36,6 +36,13 @@
 
 (macro each (rest...)
   (Array.prototype.forEach.call ~rest...))
+  
+(macro eachKey (obj callback rest...)
+  ((function (obj callback context)
+    (each (Object.keys obj)
+      (function (elem)
+        (callback.call context (get elem obj) elem obj))))
+   ~obj ~callback ~rest...))
 
 (macro map (rest...)
   (Array.prototype.map.call ~rest...))
@@ -52,12 +59,22 @@
 (macro reduce (rest...)
   (Array.prototype.reduce.call ~rest...))
 
-(macro template (args rest...)
-  (function ~args
-    (str ~rest...)))
+(macro template (name args rest...)
+  (var ~name
+    (function ~args
+      (str ~rest...))))
 
 (macro template-repeat (arg rest...)
   (reduce ~arg
     (function (memo elem index)
-      (+ memo ((template (elem index) ~rest...) elem index))) ""))
+      (+ memo (str ~rest...))) ""))
+
+(macro template-repeat-key (obj rest...)
+  (do
+    (var ret "")
+    (eachKey ~obj
+      (function (value key)
+        (set ret (+ ret (str ~rest...)))))
+    ret))
+
     

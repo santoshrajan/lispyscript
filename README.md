@@ -162,7 +162,7 @@ extend the language itself or create your own domain specific language.
 The compiler requires [nodejs][] and [npm][] installation. However the compiled
 code is standalone javascript that will run anywhere. To install use npm:
 
-    npm install lispyscript
+    npm install -g lispyscript
 
 
 ## Using LispyScript
@@ -228,7 +228,7 @@ The unless statement evaluates a set of expressions passed as it arguments when 
 each is just a macro that expands to the native 'forEach' function. So it will not work in old browsers.
 For backwards compatibility use a library like 'underscore.js'.
 
-```lips
+```lisp
 (each [1, 2, 3]
   (function (elem index list)
     (console.log elem)))
@@ -242,6 +242,9 @@ The above example using underscore.js.
   (function (elem index list)
     (console.log elem)))
 ```
+### (eachKey object (iterator) [context])
+
+eachKey iterates over a map (object) and calls the iterator with value, key, object respectively.
 
 ### (map object (iterator) [(context)])
 
@@ -274,18 +277,22 @@ will be called in case an exception is thrown. The function is called with the e
     (process.exit 1)))
 ```
 
-### (template (argument expression) (string expressions) ... )
+### (template name (argument expression) (string expressions) ... )
 
-template takes a list of arguments to be passed to the template as the first argument. The rest of the arguments are string expressions that make up the template. Template returns a compiled template function which you must call with the arguments to expand the template.
+template takes a name and a list of arguments to be passed to the template as the second argument. The rest of the arguments are string expressions that make up the template. Template returns a compiled template function with the given name which you must call with the arguments to expand the template.
 
-### (template-repeat (array/object expression) (string expressions) ... )
+### (template-repeat (array expression) (string expressions) ... )
 
-template repeat takes an array or object as its first argument and the rest are string expressions that form the template. The template is iterated over for every element of the array/object and the combined expanded template is returned. Within the template you can access the current element as 'elem' and the current index as 'index'.
-Note that while 'template returns a compiled template, template repeat returns the actual expanded template.
+template-repeat takes an array as its first argument and the rest are string expressions that form the template. The template is iterated over for every element of the array and the combined expanded template is returned. Within the template you can access the current element as 'elem' and the current index as 'index'.
+Note that while 'template' returns a compiled template, 'template-repeat' returns the actual expanded string.
+
+### (template-repeat-key (object expression) (string expressions) ... )
+
+template-repeat-key takes an object as its first argument and the rest are string expressions that form the template. The template is iterated over for every key value pair of the object and the combined expanded template is returned. Within the template you can access the current value as 'value' and the current key as 'key'.
+Note that while 'template' returns a compiled template, 'template-repeat-key' returns the actual expanded string.
 
 ```lisp
-(var page
-  (template (title links)
+(template page (title links)
 "<!DOCTYPE html>
 <html>
 <head>
@@ -298,7 +305,7 @@ Note that while 'template returns a compiled template, template repeat returns t
 
 "</ul>
 </body>
-</html>"))
+</html>")
 
 (console.log
   (page
