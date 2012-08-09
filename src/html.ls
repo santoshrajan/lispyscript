@@ -19,6 +19,9 @@
       
 (macro doctype (rest...)
   (str "<!DOCTYPE " ~rest... ">\n"))
+      
+(macro !-- (rest...)
+  (str "<!-- " ~rest... " -->"))
 
 (macro a (rest...)
   (expandTag "a" ~rest...))
@@ -168,7 +171,7 @@
   (expandTag "hr" ~rest...))
   
 (macro html (rest...)
-  (expandTag "html" ~rest...))
+  (+ "<!DOCTYPE html>\n" (expandTag "html" ~rest...)))
 
 (macro i (rest...)
   (expandTag "i" ~rest...))

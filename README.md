@@ -302,7 +302,6 @@ HTML Templates like below.
 (include "html.ls")
 
 (template page (title links)
-  (doctype "html")
   (html {lang:"en"}
     (head
       (title title)
