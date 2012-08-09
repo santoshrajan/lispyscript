@@ -314,6 +314,13 @@ HTML Templates like below.
             (li "<a href=\"" elem.href "\">" elem.text "</a>"))))
       (h1 "HTML Templates")
       (p "Welcome to LispyScript HTML templates!"))))
+
+(console.log
+  (page
+    "My Home Page"
+    [{href:"/about", text:"About"},
+     {href:"/products", text:"Products"},
+     {href:"/contact", text:"Contact"}]))
      
 And below you can see the beautified html output.
 
@@ -365,7 +372,13 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ## Change Log
 
-### Version 0.1.8, 6 Aug, 2012
+### Version 0.1.9, 9 Aug 2012
+
+Added html templates  
+Added template-repeat-key  
+Changed template syntax  
+
+### Version 0.1.8, 6 Aug 2012
 
 Changed comments from "#" to ";".  
 Made LispyScript browser compliant.  
