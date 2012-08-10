@@ -299,6 +299,7 @@ templates in a Lispy manner. By including the 'html.ls' module you write
 HTML Templates like below.
 
 ```lisp
+
 (include "html.ls")
 
 (template page (title links)
