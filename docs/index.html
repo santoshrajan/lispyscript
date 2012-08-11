@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <title>LispyScript Docs</title>
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+    </style>
+    <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">LispyScript!</a>
+          <div class="nav-collapse">
+            <ul class='nav'>
+              <li>
+                <a href='/'>Home</a>
+              </li>
+              <li>
+                <a href='/tryit'>Try It!</a>
+              </li>
+              <li class='active'>
+                <a href='#'>Docs</a>
+              </li>
+              <li>
+                <a href='http://lispyscript.blogspot.in/'>Blog</a>
+              </li>
+              <li>
+                <a href='https://github.com/santoshrajan/lispyscript'>View Source</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='container'>
+      <div class='page-header'>
+        <h1>LispyScript Docs</h1>
+        <p>A javascript With Lispy Syntax And Macros!</p>
+      </div>
+      <div class='row'>
+        <div class='span4'>
+          <ul class="nav nav-list">
+            <li class="active">
+              <a href="#macros">Macros</a>
+            </li>
+            <li>
+              <a href="#templates">Templates</a>
+            </li>
+            <li>
+              <a href="#operators">Operators</a>
+            </li>
+            <li>
+              <a href="#statements">Statements</a>
+            </li>
+          </ul>        
+        </div>
+        <div class='span8'>
+        
+<h2>Macros</h2>
+<p>LispyScript is not a dialect of Lisp. There is no list processing in LispyScript . LispyScript
+is Javascript using a Lispy syntax (a tree syntax). This is so that we can manipulate the syntax tree
+while compiling, in order to support macros.</p>
+<p>You can define a macro.</p>
+<pre>(macro array? (obj)
+  (= (toString.call ~obj) &quot;[object Array]&quot;))
+</pre>
+
+<p>The 'array?' conditional is defined as a macro in LispyScript. The 'macro' expression takes a name as
+its second element, a parameters list in the third element, and the fourth element is the template
+to which the macro will expand.</p>
+<p>Now let us create a Lisp like 'let' macro in LispyScript.</p>
+<pre>(macro let (names vals rest...)
+  ((function ~names ~rest...) ~@vals))
+
+(let (name email tel) (&quot;John&quot; &quot;john@example.org&quot; &quot;555-555-5555&quot;)
+  (console.log name)
+  (console.log email)
+  (console.log tel))
+</pre>
+
+<p>The 'let' macro creates lexically scoped variables with initial values. It does this by creating
+an anonymous function whose argument names are the required variable names, sets the variables to
+their initial values by calling the function immediately with the values. The macro also wraps the
+required code inside the function.</p>
+<p>Now lets look at the call to the 'let' macro. 'names' will correspond to '(name email tel)'. 'rest...'
+corresponds to '(console.log name) (console.log email) (console.log tel)', which is the rest of the
+expressions after vals. We want to dereference these values in the macro template, and we do that
+with '~names', '~rest...'. However 'vals' corresponds to ("John" "john@example.org" "555-555-5555").
+But thats not the way we want to dereference it. We need to dereference it without the parenthesis.
+For that we use '~@vals'.</p>
+<p>We don't really need 'let' in LispyScript. We have 'var'. But if you need it, you can extend LispyScript
+by adding this macro to your code. Thats the power of macros.<a name="templates"></a> You can
+extend the language itself or create your own domain specific language.</p>
+
+<h2>Templates</h2>
+<h4>(template name (argument expression) (string expressions) ... )</h4>
+<p>template takes a name and a list of arguments to be passed to the template as the second argument. The rest of the arguments are string expressions that make up the template. Template returns a compiled template function with the given name which you must call with the arguments to expand the template.</p>
+<h4>(template-repeat (array expression) (string expressions) ... )</h4>
+<p>template-repeat takes an array as its first argument and the rest are string expressions that form the template. The template is iterated over for every element of the array and the combined expanded template is returned. Within the template you can access the current element as 'elem' and the current index as 'index'.
+Note that while 'template' returns a compiled template, 'template-repeat' returns the actual expanded string.</p>
+<h4>(template-repeat-key (object expression) (string expressions) ... )</h4>
+<p>template-repeat-key takes an object as its first argument and the rest are string expressions that form the template. The template is iterated over for every key value pair of the object and the combined expanded template is returned. Within the template you can access the current value as 'value' and the current key as 'key'.
+Note that while 'template' returns a compiled template, 'template-repeat-key' returns the actual expanded string.</p>
+<h4>HTML5 Templates</h4>
+<p>Lispysript has a tree structure just like html, we can write html in our
+templates in a Lispy manner. By including the 'html.ls' module you write
+HTML Templates like below.</p>
+<pre><code class="lisp">
+(include &quot;html.ls&quot;)
+
+(template page (title links)
+  (html {lang:&quot;en&quot;}
+    (head
+      (title title)
+      (script {type:&quot;text/javascript&quot;, src:&quot;js/test.js&quot;}))
+    (body
+      (div {class:&quot;navigation&quot;}
+        (ul
+          (template-repeat links 
+            (li &quot;&lt;a href=\&quot;&quot; elem.href &quot;\&quot;&gt;&quot; elem.text &quot;&lt;/a&gt;&quot;))))
+      (h1 &quot;HTML Templates&quot;)
+      (p &quot;Welcome to LispyScript HTML templates!&quot;))))
+
+(console.log
+  (page
+    &quot;My Home Page&quot;
+    [{href:&quot;/about&quot;, text:&quot;About&quot;},
+     {href:&quot;/products&quot;, text:&quot;Products&quot;},
+     {href:&quot;/contact&quot;, text:&quot;Contact&quot;}]))
+
+And below you can see the beautified html output.
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+
+    &lt;head&gt;
+        &lt;title&gt;My Home Page&lt;/title&gt;
+        &lt;script type=&quot;text/javascript&quot; src=&quot;js/test.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;div class=&quot;navigation&quot;&gt;
+            &lt;ul&gt;
+                &lt;li&gt;
+                    &lt;a href=&quot;/about&quot;&gt;About&lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a href=&quot;/products&quot;&gt;Products&lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;
+                &lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+        &lt;h1&gt;HTML Templates&lt;/h1&gt;
+        &lt;p&gt;Welcome to LispyScript HTML templates!&lt;/p&gt;
+    &lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+<a name="operators"></a>
+<h2>Operators</h2>
+<pre>null?, undefined?, boolean?, number?, string?, object?, array?, function?,
+=, !=, !, &gt;, &lt;, &lt;=, &gt;=, +, -, *, /, %, &amp;&amp;, ||.
+</pre>
+<a name="statements"></a>
+<p>Note: <code>=</code> and <code>!=</code> work like <code>===</code> and <code>!==</code> in Javascript.</p>
+
+<h2>LispyScript Statements</h2>
+<h4 id="str-string-expression">(str (string expression) ...)</h4>
+<p>Adds up all the strings.</p>
+<pre>(var title &quot;My Home Page&quot;)
+(console.log
+  (str &quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;&quot; title &quot;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class=\&quot;test\&quot;&gt;
+Hello World
+&lt;/body&gt;
+&lt;/html&gt;&quot;))
+</pre>
+
+<p>In LispyScript double quoted strings are multiline strings. As you can see above they span multiple lines.
+If you need a double quote inside the string, escape it with \".</p>
+<h4 id="if-condition-if-true-expression-if-false-expression">(if (condition) (if true expression) (if false expression))</h4>
+<p>If takes a conditional expression and evaluates the true expression if the condition is true, or the false
+expression otherwise.</p>
+<h4 id="do-expression1-expression2">(do (expression1) (expression2) ...)</h4>
+<p>The do statement evaluates a set of expressions passed as it arguments.</p>
+<h4 id="when-condition-expression1-expression2">(when (condition) (expression1) (expression2) ...)</h4>
+<p>The when statement evaluates a set of expressions passed as it arguments when the condition is true.</p>
+<h4 id="unless-condition-expression1-expression2">(unless (condition) (expression1) (expression2) ...)</h4>
+<p>The unless statement evaluates a set of expressions passed as it arguments when the condition is false.</p>
+<h4 id="each-object-iterator-context">(each object (iterator) [context])</h4>
+<p>each is just a macro that expands to the native 'forEach' function. So it will not work in old browsers.
+For backwards compatibility use a library like 'underscore.js'.</p>
+<pre>(each [1, 2, 3]
+  (function (elem index list)
+    (console.log elem)))
+</pre>
+
+<p>The above example using underscore.js.</p>
+<pre>(var _ (require 'underscore'))
+(_.each [1, 2, 3]
+  (function (elem index list)
+    (console.log elem)))
+</pre>
+
+<h4 id="eachkey-object-iterator-context">(eachKey object (iterator) [context])</h4>
+<p>eachKey iterates over a map (object) and calls the iterator with value, key, object respectively.</p>
+<h4 id="map-object-iterator-context">(map object (iterator) [(context)])</h4>
+<p>map is just a macro that expands to the native 'map' function. So it will not work in old browsers.
+For backwards compatibility use a library like 'underscore.js'.</p>
+<h4 id="reduce-object-iterator-memo-context">(reduce object (iterator) memo [context])</h4>
+<p>reduce is just a macro that expands to the native 'reduce' function. So it will not work in old browsers.
+For backwards compatibility use a library like 'underscore.js'.</p>
+<h4 id="function-arguments-expression-expression1-expression2">(function (arguments expression) (expression1) (expression2) ... )</h4>
+<p>Creates an anonymous function.</p>
+<h4 id="macro-name-arguments-expression-template-expression">(macro name (arguments expression) (template expression))</h4>
+<h4 id="try-expression1-expression2-catch-function">(try (expression1) (expression2) ... (catch function))</h4>
+<p>Try takes a set of expressions and evaluates them. The last expression must be a function, that
+will be called in case an exception is thrown. The function is called with the error object.</p>
+<pre>(var fs (require 'fs'))
+(var outfile &quot;text.txt&quot;)
+(try
+  (fs.writeFileSync outfile &quot;Hello World&quot;)
+  (function (err)
+    (console.log (+ &quot;Cannot write file &quot; outfile)
+    (process.exit 1)))
+</pre>
+<h4>(include "string filename")</h4>
+<p>Includes a file to be compiled with this compilation unit. It will also search the 'src/modules' folder for Lispyscript modules like 'html.ls'.</p>
+<h4>Comments</h4>
+<p>Comments in LispyScript start with a <code>;</code> and span the rest of the line.</p>
+        
+        
+        </div>
+      </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
+    type="text/javascript"></script>
+    <script type="text/javascript" src="../bootstrap/js/bootstrap.js"></script>
+  </body>
+
+</html>

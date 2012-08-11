@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <title>LispyScript</title>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+      pre {background: #fff;}
+    </style>
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">LispyScript!</a>
+          <div class="nav-collapse">
+            <ul class='nav'>
+              <li class='active'>
+                <a href='#'>Home</a>
+              </li>
+              <li>
+                <a href='/tryit'>Try It!</a>
+              </li>
+              <li>
+                <a href='/docs'>Docs</a>
+              </li>
+              <li>
+                <a href='http://lispyscript.blogspot.in/'>Blog</a>
+              </li>
+              <li>
+                <a href='https://github.com/santoshrajan/lispyscript'>View Source</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='container'>
+      <div class='page-header'>
+        <h1>LispyScript</h1>
+        <p>A javascript With Lispy Syntax And Macros!</p>
+      </div>
+      <div class='row'>
+        <div class='span6'>
+          <h2>Overview</h2>
+          <p>An inherent problem with Javascript is that it has no macro support, like
+            other Lisp like languages. That's because macros manipulate the syntax
+            tree while compiling. And this is next to impossible in a language like
+            Javascript.</p>
+          <p>In LispyScript we write Javascript in a tree structure. If you know Javascript
+            and a Lisp like language, then using LispyScript will be abreeze. Even
+            if you don't know a Lispy Language, all you need to learn is to write code
+            in a tree structure.</p>
+          <h3>Hello World in LispyScript</h3>
+          <pre>(console.log "Hello LispyScript!")</pre>
+          <p>A LispyScript program is made up of expressions in parenthesis. The first
+            element in the expression is a function or a LispyScript keyword. The rest
+            of the elements (separated by space characters) are the arguments to the
+            function. As you can see above we can directly access javascript functions
+            from LispyScript.</p>
+          <p>A more intricate Hello World!</p>
+          <pre>
+(if (undefined? window)
+  (console.log &quot;Hello LispyScript!&quot;)
+  (alert &quot;Hello LispyScript!&quot;))
+</pre>
+          <p>You can have expressions within expressions.</p>
+          <h3>Functions</h3>
+          <p>An anonymous function in LispyScript.</p>
+          <pre>(function (x) (* x x))</pre>
+          <p>The first element in an expression can be an anonymous function.</p>
+          <pre>((function (x) (* x x)) 2)</pre>
+          <p>That was the anonymous function above evaluated immediately with argument
+            2. Functions return the last expression evaluated within the function.</p>
+          <p>You can set a variable name to a function.</p>
+          <pre>(var square (function (x) (* x x))) (console.log (square 10))</pre>
+          <p>The 'var' expression takes a variable name as the second element and sets
+            its value to the third.</p>
+          <h3>LispyScript is Javascript!</h3>
+          <p>All Javascript functions, objects and literals can be used in LispyScript.</p>
+          <pre>
+(Array.prototype.forEach.call [1, 2, 3]
+  (function (elem index list)
+    (console.log elem)))
+</pre>
+          <p>If you noticed we passed a Javascript literal array as the first argument
+            to 'forEach'. You could just as well have passed in '{one: 1, two: 2, three:
+            3}' instead.</p>
+          <p>You can access object methods and properties using the '.' notation.</p>
+          <pre>(console.log (.greet {greet: &quot;hello&quot;}))</pre>
+          <p>ie. If the first element of an expression starts with a '.', it's considered
+            as a property of the second element, and the expression evaluates to the
+            property.</p>
+          <p>You can also use the 'get' expression to access a property of an object.</p>
+          <pre>
+(console.log (get &quot;greet&quot; {greet: &quot;hello&quot;}))
+(console.log(get 1 [1, 2, 3]))
+</pre>
+          <p>You can 'set' variables too.</p>
+          <pre>
+(set name &quot;John&quot;)
+(set window.onload (function () (alert &quot;Page Loaded&quot;)))
+; You can set array indices using the three argument version of set
+(var foo [])
+(set 1 foo &quot;hello&quot;) =&gt; foo[1] = &quot;hello&quot;;
+(set &quot;bar&quot; foo &quot;hello&quot;) =&gt; foo[&quot;bar'] = &quot;hello&quot;;
+</pre>
+          <p>The node server example in LispyScript.</p>
+          <pre>
+(var http (require &quot;http&quot;))
+(var server
+  (http.createServer
+    (function (request response)
+      (response.writeHead 200 {'Content-Type': 'text/plain'})
+      (response.end &quot;Hello World\n&quot;))))
+(server.listen 1337 &quot;127.0.0.1&quot;)
+(console.log &quot;Server running at http://127.0.0.1:1337/&quot;)
+</pre>
+          <div
+          class='alert alert-info'>
+            <p>And there are Macros! and Templates! and more in LispyScript!</p>
+            <p>
+              <a class='btn btn-primary btn-large' href='/docs'>Learn more</a>
+            </p>
+        </div>
+      </div>
+      <div class='span6'>
+        <h3>Installing</h3>
+        <div class='alert'>Requires
+          <a href='http://nodejs.org'>Node.js</a> Installed.</div>
+        <h5>Install Using npm</h5>
+        <pre>$ npm install -g lispyscript</pre>
+        <h5>Or install from latest source</h5>
+        <pre>
+$ git clone git@github.com:santoshrajan/lispyscript.git
+$ cd path/to/lispyscript
+$ npm link
+</pre>
+        <h3>Usage</h3>
+        <h5>Run a simple LispyScript REPL</h5>
+        <pre>$ lispy</pre>
+        <h5>Compile 'test.ls' to 'test.js' in the same folder</h5>
+        <pre>$ lispy test.ls</pre>
+        <h5>Compile 'test.ls' to 'test.js' in another folder</h5>
+        <pre>$ lispy src/test.ls lib/test.js</pre>
+        <h5>Compile stdin to stdout</h5>
+        <pre>$ echo '(console.log "Hello World")' | lispy</pre>
+          <div class='alert alert-info'>
+            <p>A LipsyScript example using Nodejs, Expressjs, Twitter Bootstrap and LispyScript html5 templates.</p>
+            <p>
+              <a class='btn btn-primary' href='https://gist.github.com/3321591'>Server Example</a>
+            </p>
+        </div>
+      </div>
+    </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
+    type="text/javascript"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+  </body>
+
+</html>
