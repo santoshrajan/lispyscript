@@ -23,6 +23,14 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.1, 12 Aug 2012
+
+Added to docs
+Edited docs to for latest version
+Added to examples
+Minor bug fixes  
+
+
 ### Version 0.2.0, 11 Aug 2012
 
 Bug fix for usage in browser.  
