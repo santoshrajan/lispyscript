@@ -6,11 +6,19 @@
 (var ls (require "../lib/ls"))
 (var repl (require "./repl"))
 
+(var fileErrorMsg "File Error - %s
+This usually happens when an input file is not found
+or when an output file cannot be written (permission denied).")
+
 (var exit
   (function (error)
     (if error
       (do
-        (console.log error)
+        (if error.path
+          (console.log
+            fileErrorMsg
+            error.path)
+          (console.log error))
         (process.exit 1))
       (process.exit 0))))
 
