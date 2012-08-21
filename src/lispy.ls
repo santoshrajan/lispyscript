@@ -6,6 +6,8 @@
 (var ls (require "../lib/ls"))
 (var repl (require "./repl"))
 
+;; node js error msg for sync io only reports libuv errno, so we make
+;; it a little more palatable.
 (var fileErrorMsg "File Error - %s
 This usually happens when an input file is not found
 or when an output file cannot be written (permission denied).")
@@ -14,7 +16,7 @@ or when an output file cannot be written (permission denied).")
   (function (error)
     (if error
       (do
-        (if error.path
+        (if error.path  ;; file err will have error.path
           (console.log
             fileErrorMsg
             error.path)
@@ -43,7 +45,6 @@ or when an output file cannot be written (permission denied).")
              (try
               (output.write (ls._compile source uri))
               exit))))
-
     (input.on "error" exit)
     (output.on "error" exit)))
 
