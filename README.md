@@ -23,6 +23,11 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.2, 9 Sep 2012
+
+Added tail call optimised loop recur construct  
+Bug fixes   
+
 ### Version 0.2.1, 12 Aug 2012
 
 Added to docs  

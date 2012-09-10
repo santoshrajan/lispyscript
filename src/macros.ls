@@ -77,3 +77,26 @@
         (set ret (+ ret (str ~rest...)))))
     ret))
 
+;; Tail call optimised loop recur construct
+;; Takes a set of args, initial values, and body
+;; eg. (loop (arg1 arg2 arg3) (init1 init2 init3)
+;;       ....
+;;       (recur val1 val2 val3))
+;; The body MUST evaluate to a NON undefined value to break from the loop.
+;; null, 0 and other falsy values are ok to break from the loop.
+(macro loop (args vals rest...)
+  ((function ()
+    (var recur null)
+    (var _result !undefined)
+    (var _nextArgs null)
+    (var _f (function ~args ~rest...))
+    (set recur
+      (function ()
+        (set _nextArgs arguments)
+        (if (= _result undefined)
+          undefined
+          (do
+            (set _result undefined)
+            (javascript "while (_result === undefined) _result = _f.apply(this, _nextArgs)")
+            _result))))
+    (recur ~@vals))))
