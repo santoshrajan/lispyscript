@@ -1,29 +1,38 @@
 ;; List of built in macros for LispyScript. This file is included by
 ;; default by the LispyScript compiler.
 
-(macro object? (obj)
-  (= (typeof ~obj) "object"))
-
-(macro array? (obj)
-  (= (toString.call ~obj) "[object Array]"))
-
-(macro string? (obj)
-  (= (toString.call ~obj) "[object String]"))
-
-(macro number? (obj)
-  (= (toString.call ~obj) "[object Number]"))
-
-(macro boolean? (obj)
-  (= (typeof ~obj) "boolean"))
-
-(macro function? (obj)
-  (= (toString.call ~obj) "[object Function]"))
+;; ! arrays will also report true for this
 
 (macro undefined? (obj)
   (= (typeof ~obj) "undefined"))
 
 (macro null? (obj)
   (= ~obj null))
+
+(macro zero? (obj)
+  (= 0 ~obj))
+
+(macro boolean? (obj)
+  (= (typeof ~obj) "boolean"))
+
+(macro number? (obj)
+  (= (toString.call ~obj) "[object Number]"))
+
+(macro string? (obj)
+  (= (toString.call ~obj) "[object String]"))
+
+(macro array? (obj)
+  (= (toString.call ~obj) "[object Array]"))
+
+(macro object? (obj)
+  ((function (obj)
+    (= obj (Object obj))) ~obj))
+
+(macro function? (obj)
+  (= (toString.call ~obj) "[object Function]"))
+
+(macro arguments? (obj)
+  (= (toString.call ~obj) "[object Arguments]"))
 
 (macro do (rest...)
   ((function () ~rest...)))
@@ -35,17 +44,33 @@
   (when (! ~cond) (do ~rest...)))
 
 (macro each (rest...)
-  (Array.prototype.forEach.call ~rest...))
-  
-(macro eachKey (obj callback rest...)
-  ((function (obj callback context)
-    (each (Object.keys obj)
+  ((function (o f s)
+    (javascript "if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)}")
+    undefined) ~rest...))
+ 
+(macro eachKey (rest...)
+  ((function (o f s)
+    (javascript "var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in obj)k.push(i)}")
+    (each k
       (function (elem)
-        (callback.call context (get elem obj) elem obj))))
-   ~obj ~callback ~rest...))
+        (f.call s (get elem o) elem o)))) ~rest...))
+
+(macro reduce (rest...)
+  ((function (arr f init)
+    (if (< arguments.length 3)
+      (set init (arr.shift)))
+    (each arr
+      (function (val i list)
+        (set init (f init val i list))))
+    init) ~rest...))
 
 (macro map (rest...)
-  (Array.prototype.map.call ~rest...))
+  ((function (arr f scope)
+    (var result [])
+    (each arr
+      (function (val i list)
+        (result.push (f.call scope val i list))))
+    result) ~rest...))
 
 (macro filter (rest...)
   (Array.prototype.filter.call ~rest...))
@@ -55,9 +80,6 @@
 
 (macro every (rest...)
   (Array.prototype.every.call ~rest...))
-
-(macro reduce (rest...)
-  (Array.prototype.reduce.call ~rest...))
 
 (macro template (name args rest...)
   (var ~name
@@ -97,6 +119,12 @@
           undefined
           (do
             (set _result undefined)
-            (javascript "while (_result === undefined) _result = _f.apply(this, _nextArgs)")
+            (javascript "while(_result===undefined) _result=_f.apply(this,_nextArgs)")
             _result))))
     (recur ~@vals))))
+
+(macro assert (cond message)
+  (if (= true ~cond)
+    (console.log (+ "Passed - " ~message))
+    (throw (+ "Failed - " ~message))))
+
