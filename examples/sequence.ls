@@ -2,7 +2,8 @@
 ;; LispyScript sequenced callback example
 ;; No need for nested callbacks. Just write your callbacks in a sequence and pass "(next)" as 
 ;; your callback, which will set the next function in the sequence as your callback.
-;; A simple node server that will serve static plain text file to the browser.
+;;
+;; This example is a simple node server that will serve static plain text file to the browser.
 ;; 
 
 (var fs (require "fs"))
@@ -44,7 +45,7 @@
 ;; Also visible to all the sequence functions is a function called next.
 ;; next returns the next function in the sequence.
 
-;; In the example below we create a sequence function called requestHandler and
+;; In the example above we create a sequence function called requestHandler and
 ;; set it as the request callback for the node server.
 ;; In the initialization block we create a var called filename and set it to the
 ;; requested file. We also set the response content type.
