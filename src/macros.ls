@@ -123,6 +123,18 @@
             _result))))
     (recur ~@vals))))
 
+(macro sequence (name args init rest...)
+  (var ~name
+    (function ~args
+      ((function ()
+        (var _curr 0)
+        (var next
+          (function ()
+            (get _curr++ actions)))
+        (var actions (new Array ~rest...))
+        ~@init
+        ((next)))))))
+
 (macro assert (cond message)
   (if (= true ~cond)
     (console.log (+ "Passed - " ~message))
