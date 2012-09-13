@@ -1,8 +1,8 @@
 ;; http://lispyscript.com
-;; LispyScripy asynchronous sequence example
+;; LispyScript sequenced callback example
+;; No need for nested callbacks. Just write your callbacks in a sequence and pass "(next)" as 
+;; your callback, which will set the next function in the sequence as your callback.
 ;; A simple node server that will serve static plain text file to the browser.
-;; No need for nested callbacks. Just pass "(next)" as your callback, which will
-;; set the next function in the sequence as your callback.
 ;; 
 
 (var fs (require "fs"))
