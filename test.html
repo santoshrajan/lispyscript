@@ -156,7 +156,8 @@ var result = [(true === true) ?
     ["Passed - ","map test","\n"].join('') :
     ["Failed - ","map test","\n"].join('')].join('');
 var browserTest = function() {
-    return document.getElementById("testresult")["innerHTML"] = result;
+    var el = document.getElementById("testresult");
+    return el.appendChild(document.createTextNode(result));
 };
 (typeof(window) === "undefined") ?
     console.log(result) :
