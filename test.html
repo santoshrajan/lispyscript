@@ -26,15 +26,15 @@ var result = [(true === true) ?
     ["Passed - ","(boolean? true)","\n"].join('') :
     ["Failed - ","(boolean? true)","\n"].join(''),(true === (!(typeof(0) === "boolean"))) ?
     ["Passed - ","(! (boolean? 0))","\n"].join('') :
-    ["Failed - ","(! (boolean? 0))","\n"].join(''),(true === (toString.call(1) === "[object Number]")) ?
+    ["Failed - ","(! (boolean? 0))","\n"].join(''),(true === (Object.prototype.toString.call(1) === "[object Number]")) ?
     ["Passed - ","(number? 1)","\n"].join('') :
-    ["Failed - ","(number? 1)","\n"].join(''),(true === (!(toString.call('') === "[object Number]"))) ?
+    ["Failed - ","(number? 1)","\n"].join(''),(true === (!(Object.prototype.toString.call('') === "[object Number]"))) ?
     ["Passed - ","(! (number? ''))","\n"].join('') :
-    ["Failed - ","(! (number? ''))","\n"].join(''),(true === (toString.call('') === "[object String]")) ?
+    ["Failed - ","(! (number? ''))","\n"].join(''),(true === (Object.prototype.toString.call('') === "[object String]")) ?
     ["Passed - ","(string? '')","\n"].join('') :
-    ["Failed - ","(string? '')","\n"].join(''),(true === (toString.call([]) === "[object Array]")) ?
+    ["Failed - ","(string? '')","\n"].join(''),(true === (Object.prototype.toString.call([]) === "[object Array]")) ?
     ["Passed - ","(array? []])","\n"].join('') :
-    ["Failed - ","(array? []])","\n"].join(''),(true === (!(toString.call({}) === "[object Array]"))) ?
+    ["Failed - ","(array? []])","\n"].join(''),(true === (!(Object.prototype.toString.call({}) === "[object Array]"))) ?
     ["Passed - ","(! (array? {}))","\n"].join('') :
     ["Failed - ","(! (array? {}))","\n"].join(''),(true === (function(obj) {
         return (obj === Object(obj));
@@ -49,11 +49,19 @@ var result = [(true === true) ?
     })(null))) ?
     ["Passed - ","(! (object? null))","\n"].join('') :
     ["Failed - ","(! (object? null))","\n"].join(''),(true === (function() {
-        return (toString.call(arguments) === "[object Arguments]");
+        return (function(obj) {
+            return (Object.prototype.toString.call(obj) === "[object Arguments]") ?
+                true :
+                (!(!(obj && obj.callee)));
+        })(arguments);
     })()) ?
     ["Passed - ","((function () (arguments? arguments)))","\n"].join('') :
     ["Failed - ","((function () (arguments? arguments)))","\n"].join(''),(true === (function() {
-        return (!(toString.call([]) === "[object Arguments]"));
+        return (!(function(obj) {
+            return (Object.prototype.toString.call(obj) === "[object Arguments]") ?
+                true :
+                (!(!(obj && obj.callee)));
+        })([]));
     })()) ?
     ["Passed - ","((function () (! (arguments? []))))","\n"].join('') :
     ["Failed - ","((function () (! (arguments? []))))","\n"].join(''),(true === (10 === (function() {
@@ -92,7 +100,7 @@ var result = [(true === true) ?
     ["Failed - ","each test","\n"].join(''),(true === (10 === (function() {
         var ret = 0;
         (function(o,f,s) {
-            var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in obj)k.push(i)};
+            var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in s)k.push(i)};
             return (function(o,f,s) {
                 if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
                 return undefined;
@@ -153,6 +161,7 @@ var browserTest = function() {
 (typeof(window) === "undefined") ?
     console.log(result) :
     window.onload = browserTest;
+
 </script>
 </body>
 </html>
