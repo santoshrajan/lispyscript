@@ -16,23 +16,26 @@
   (= (typeof ~obj) "boolean"))
 
 (macro number? (obj)
-  (= (toString.call ~obj) "[object Number]"))
+  (= (Object.prototype.toString.call ~obj) "[object Number]"))
 
 (macro string? (obj)
-  (= (toString.call ~obj) "[object String]"))
+  (= (Object.prototype.toString.call ~obj) "[object String]"))
 
 (macro array? (obj)
-  (= (toString.call ~obj) "[object Array]"))
+  (= (Object.prototype.toString.call ~obj) "[object Array]"))
 
 (macro object? (obj)
   ((function (obj)
     (= obj (Object obj))) ~obj))
 
 (macro function? (obj)
-  (= (toString.call ~obj) "[object Function]"))
+  (= (Object.prototype.toString.call ~obj) "[object Function]"))
 
 (macro arguments? (obj)
-  (= (toString.call ~obj) "[object Arguments]"))
+  ((function (obj)
+    (if (= (Object.prototype.toString.call obj) "[object Arguments]")
+      true
+      (! (! (&& obj obj.callee))))) ~obj))
 
 (macro do (rest...)
   ((function () ~rest...)))
@@ -50,7 +53,7 @@
  
 (macro eachKey (rest...)
   ((function (o f s)
-    (javascript "var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in obj)k.push(i)}")
+    (javascript "var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in o)k.push(i)}")
     (each k
       (function (elem)
         (f.call s (get elem o) elem o)))) ~rest...))
@@ -130,13 +133,16 @@
         (var _curr 0)
         (var next
           (function ()
-            (get _curr++ actions)))
+            (var ne (get _curr++ actions))
+            (if ne
+              ne
+              (throw "Call to (next) beyond sequence."))))
         (var actions (new Array ~rest...))
         ~@init
         ((next)))))))
 
 (macro assert (cond message)
   (if (= true ~cond)
-    (console.log (+ "Passed - " ~message))
-    (throw (+ "Failed - " ~message))))
+    (str "Passed - " ~message "\n")
+    (str "Failed - " ~message "\n")))
 
