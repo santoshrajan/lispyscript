@@ -100,7 +100,7 @@ var result = [(true === true) ?
     ["Failed - ","each test","\n"].join(''),(true === (10 === (function() {
         var ret = 0;
         (function(o,f,s) {
-            var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in s)k.push(i)};
+            var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in o)k.push(i)};
             return (function(o,f,s) {
                 if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
                 return undefined;
