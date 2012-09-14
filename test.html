@@ -157,7 +157,9 @@ var result = [(true === true) ?
     ["Failed - ","map test","\n"].join('')].join('');
 var browserTest = function() {
     var el = document.getElementById("testresult");
-    return el.appendChild(document.createTextNode(result));
+    return el.outerHTML ?
+        el.outerHTML = ["<pre>",result,"</pre>"].join('') :
+        el.innerHTML = result;
 };
 (typeof(window) === "undefined") ?
     console.log(result) :
