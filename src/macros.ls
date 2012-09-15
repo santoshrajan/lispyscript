@@ -9,11 +9,17 @@
 (macro null? (obj)
   (= ~obj null))
 
-(macro zero? (obj)
-  (= 0 ~obj))
+(macro true? (obj)
+  (= true ~obj))
+
+(macro false? (obj)
+  (= false ~obj))
 
 (macro boolean? (obj)
   (= (typeof ~obj) "boolean"))
+
+(macro zero? (obj)
+  (= 0 ~obj))
 
 (macro number? (obj)
   (= (Object.prototype.toString.call ~obj) "[object Number]"))
@@ -30,12 +36,6 @@
 
 (macro function? (obj)
   (= (Object.prototype.toString.call ~obj) "[object Function]"))
-
-(macro arguments? (obj)
-  ((function (obj)
-    (if (= (Object.prototype.toString.call obj) "[object Arguments]")
-      true
-      (! (! (&& obj obj.callee))))) ~obj))
 
 (macro do (rest...)
   ((function () ~rest...)))
@@ -142,7 +142,36 @@
         ((next)))))))
 
 (macro assert (cond message)
-  (if (= true ~cond)
-    (str "Passed - " ~message "\n")
-    (str "Failed - " ~message "\n")))
+  (if (true? ~cond)
+    (+ "Passed - " ~message)
+    (+ "Failed - " ~message)))
+
+(macro testGroup (name rest...)
+  (var ~name 
+    (function ()
+      (new Array ~rest...))))
+
+(macro testRunner (groupname desc)
+  ((function (groupname)
+    (var start (new Date))
+    (var top (str "\n" ~desc "\n" start))
+    (var tests (groupname))
+    (var passed 0)
+    (var failed 0)
+    (each tests
+      (function (elem)
+        (if (elem.match /^Passed/)
+          ++passed
+          ++failed)))
+    (str 
+      top 
+      "\n\n"
+      (template-repeat tests elem "\n")
+      "\nTotal tests " tests.length 
+      "\nPassed " passed 
+      "\nFailed " failed 
+      "\nDuration " (- (new Date) start) "ms\n")) ~groupname))
+
+
+
 

@@ -23,6 +23,14 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.3, 15 Sep 2012
+
+Added Callback Sequence to avoid nested callbacks.  
+Added Test features for language.  
+Added Test Suite.  
+Fixed Browser Compatibility issues.  
+Bug fixes   
+
 ### Version 0.2.2, 9 Sep 2012
 
 Added tail call optimised loop recur construct  
