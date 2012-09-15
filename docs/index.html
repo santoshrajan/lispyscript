@@ -84,6 +84,12 @@
              <li>
               <a href="#statements">Statements</a>
             </li>
+             <li>
+              <a href="#sequence">Callback Sequence</a>
+            </li>
+             <li>
+              <a href="#testing">Testing</a>
+            </li>
           </ul>        
         </div>
         <div class='span8'>
@@ -95,7 +101,7 @@ is Javascript using a Lispy syntax (a tree syntax). This is so that we can manip
 while compiling, in order to support macros.</p>
 <p>You can define a macro.</p>
 <pre>(macro array? (obj)
-  (= (toString.call ~obj) &quot;[object Array]&quot;))
+  (= (Object.prototype.toString.call ~obj) &quot;[object Array]&quot;))
 </pre>
 
 <p>The 'array?' conditional is defined as a macro in LispyScript. The 'macro' expression takes a name as
@@ -288,12 +294,32 @@ will be called in case an exception is thrown. The function is called with the e
 <p>Includes a file to be compiled with this compilation unit. It will also search the 'includes' folder for Lispyscript modules like 'html.ls'.</p>
 <h4>(throw (expression))</h4>
 <p>Will throw an error. (expression) can be string or object or an expression</p>
-<h4>(assert (expression) "string message")</h4>
-<p>The expression must evaluate to "true" and not something truthy, and will print the message to the
-console. If false it will throw an exception with the message as argument. </p>
 <h4>Comments</h4>
+<a name="sequence"></a>
 <p>Comments in LispyScript start with a <code>;</code> and span the rest of the line.</p>
-        
+
+<h2>Callback Sequence</h2>
+<p>LispyScript allows you to avoid writing nested callbacks, by a callback sequence feature. You write your callbacks
+in a series (sequence). All the functions in the series are exposed to a functions called "next". Calling "next"
+returns the next callback in the sequence. So just pass the return value of next, when you call a callback.
+<a name="testing"></a>
+You can see an example with some notes on usage <a href="https://gist.github.com/3715526">here</a>.
+</p>
+
+<h2>Testing</h2>
+<p>LispyScript comes with some built in testing features to let you test your code while developing. However if
+you find that the features offered in the built in tests are not enough, you can use any of the javascript
+test frameworks available.</p>
+<h4>(assert (expression) "string message")</h4>
+<p>The expression must evaluate to "true" and not something truthy, and will return the message
+with "Passed " or "Failed " added to your message. </p>
+<h4>(testGroup name (assert1) (assert2) ...)</h4>
+<p>Create test groups by calling the testGroup expression. It takes a name and one or more asserts. It creates a
+testGroup which is invoked by the testRunner.</p>
+<h4>(testRunner groupname "Desription")</h4>
+<p>Call testRunner to invoke your test group. Pass it the name of the test group and a string description
+which will be shown at the top of your test results. It returns the test results as a string.</p>
+         
         
         </div>
       </div>
