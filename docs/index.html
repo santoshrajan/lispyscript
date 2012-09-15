@@ -91,6 +91,9 @@
               <a href="#testing">Testing</a>
             </li>
           </ul>        
+             <li>
+              <a href="#browser">Browser Compatibility</a>
+            </li>
         </div>
         <div class='span8'>
         
@@ -318,9 +321,18 @@ with "Passed " or "Failed " added to your message. </p>
 testGroup which is invoked by the testRunner.</p>
 <h4>(testRunner groupname "Desription")</h4>
 <p>Call testRunner to invoke your test group. Pass it the name of the test group and a string description
+<a name="browser"></a>
 which will be shown at the top of your test results. It returns the test results as a string.</p>
          
-        
+<h2>Browser Compatibility</h2>
+<p>The compiled Javascript code is compatible with all modern browsers.</p>
+<p>However since Lispyscript allows you to call Javascript functions directly from LispyScript,
+you need to guard against calling non standard native functions. eg. If you call the Javascript "forEach" from
+LispyScript, this will not work in IE8. So instead use LispyScript "each" instead.</p>
+<p>You can also run LispyScript directly in your browser. Thats how the LispyScript tryit page works.
+However this is not recommended, because compiling your LispyScript and loading the compiled Javascript will
+always be faster.</p>
+
         </div>
       </div>
       <footer class="footer" style="margin-top: 45px; padding: 35px 0 36px;border-top: 1px solid #e5e5e5;">
