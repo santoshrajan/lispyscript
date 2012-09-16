@@ -1,8 +1,6 @@
 ;; List of built in macros for LispyScript. This file is included by
 ;; default by the LispyScript compiler.
 
-;; ! arrays will also report true for this
-
 (macro undefined? (obj)
   (= (typeof ~obj) "undefined"))
 
@@ -45,6 +43,16 @@
 
 (macro unless (cond rest...)
   (when (! ~cond) (do ~rest...)))
+
+(macro array (rest...)
+  ((function ()
+    (Array.prototype.slice.call arguments)) ~rest...))
+
+(macro object (rest...)
+  ((function ()
+    (var r {})
+    (javascript "for(var i=0,l=arguments.length;i<l;i+=2)r[arguments[i]]=arguments[i+1];")
+    r) ~rest...))
 
 (macro each (rest...)
   ((function (o f s)
@@ -149,23 +157,21 @@
 (macro testGroup (name rest...)
   (var ~name 
     (function ()
-      (new Array ~rest...))))
+      (array ~rest...))))
 
 (macro testRunner (groupname desc)
   ((function (groupname)
     (var start (new Date))
-    (var top (str "\n" ~desc "\n" start))
     (var tests (groupname))
     (var passed 0)
     (var failed 0)
-    (each tests
+    (each (groupname)
       (function (elem)
         (if (elem.match /^Passed/)
           ++passed
           ++failed)))
     (str 
-      top 
-      "\n\n"
+      (str "\n" ~desc "\n" start "\n\n")
       (template-repeat tests elem "\n")
       "\nTotal tests " tests.length 
       "\nPassed " passed 

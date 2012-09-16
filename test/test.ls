@@ -1,5 +1,4 @@
 
-
 ;; A template def for template test
 (template testTemplate (one two three)
   "1" one "2" two "3" three)
@@ -49,7 +48,7 @@
   (= 10
     (do
       (var ret 0)
-      (each [1, 2, 3, 4]
+      (each (array 1 2 3 4)
         (function (val i obj)
           (set ret (+ ret val))))
       ret)) "each test")
@@ -57,18 +56,18 @@
   (= 10
     (do
       (var ret 0)
-      (eachKey {a:1,b:2,c:3,d:4}
+      (eachKey (object "a" 1 "b" 2 "c" 3 "d" 4)
         (function (val key obj)
           (set ret (+ ret val))))
       ret)) "eachKey test")
 (assert 
   (= 10
-    (reduce [1,2,3,4]
+    (reduce (array 1 2 3 4)
       (function (accum val i list)
         (+ accum val)) 0)) "reduce test")
 (assert 
   (= 20
-    (reduce (map [1,2,3,4] (function (val i list) (* val 2)))
+    (reduce (map (array 1 2 3 4) (function (val i list) (* val 2)))
       (function (accum val i list)
         (+ accum val)) 0)) "map test")
 (assert (= "112233" (testTemplate 1 2 3)) "template test")
@@ -91,4 +90,3 @@
 (if (undefined? window)
   (console.log (testRunner lispyscript "LispyScript Testing"))
   (set window.onload browserTest))
-
