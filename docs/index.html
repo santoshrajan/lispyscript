@@ -131,10 +131,11 @@ with '~names', '~rest...'. However 'vals' corresponds to ("John" "john@example.o
 But thats not the way we want to dereference it. We need to dereference it without the parenthesis.
 For that we use '~@vals'.</p>
 <p>We don't really need 'let' in LispyScript. We have 'var'. But if you need it, you can extend LispyScript
-by adding this macro to your code. Thats the power of macros.<a name="templates"></a> You can
+by adding this macro to your code. Thats the power of macros. You can
 extend the language itself or create your own domain specific language.</p>
 
-<h2>Templates</h2>
+<a name="templates"></a>
+<h2 style="padding-top:40px">Templates</h2>
 <h4>(template name (argument expression) (string expressions) ... )</h4>
 <p>template takes a name and a list of arguments to be passed to the template as the second argument. The rest of the arguments are string expressions that make up the template. Template returns a compiled template function with the given name which you must call with the arguments to expand the template.</p>
 <h4>(template-repeat (array expression) (string expressions) ... )</h4>
@@ -201,7 +202,7 @@ And below you can see the beautified html output.
 &lt;/html&gt;
 </code></pre>
 <a name="operators"></a>
-<h2>Operators</h2>
+<h2 style="padding-top:40px">Operators</h2>
 <pre>undefined?, null?, true?, false?, zero?, boolean?, number?, string?, object?, array?, function?,
 =, !=, !, &gt;, &lt;, &lt;=, &gt;=, +, -, *, /, %, &amp;&amp;, ||.
 </pre>
@@ -210,7 +211,7 @@ And below you can see the beautified html output.
 
 <a name="looping"></a>
 
-<h2>Iteration & Looping</h2>
+<h2 style="padding-top:40px">Iteration & Looping</h2>
 
 <h4>(loop (arguments) (initial values) (expression1) (expression2) ...)</h4>
 <p>The loop - recur construct is a tail call optimised looping expression. It creates a binding for
@@ -254,7 +255,8 @@ element of the array with element value, index, array. The returned value from t
 is pushed into a new array. map returns the new array. If context is provided then "this" inside the 
 iterator function will be the context object.</p>
 
-<h2>LispyScript Statements</h2>
+<h2 style="padding-top:40px">LispyScript Statements</h2>
+
 <h4>(str (string expression) ...)</h4>
 <p>Adds up all the strings.</p>
 <pre>(var title &quot;My Home Page&quot;)
@@ -269,20 +271,45 @@ Hello World
 &lt;/body&gt;
 &lt;/html&gt;&quot;))
 </pre>
-
 <p>In LispyScript double quoted strings are multiline strings. As you can see above they span multiple lines.
 If you need a double quote inside the string, escape it with \".</p>
+
+<h4>(array elem1 elem2 ....)</h4>
+<p>Create a Javascript Array.</p>
+<pre>(array 1 2 3 4)
+</pre>
+<p>You can also create an array using the Javascript literal notation like [1, 2, 3, 4] however there is a difference.
+The literal notation is evaluated in the Javascript context, and will work in most cases except when you want some
+LispyScript code evaluated, like when one of the elements is a LispyScript anonymous function. And unlike Javascript
+"new Array" a single integer passed will still create a proper array with the int as the first element.</p>
+
+<h4>(object key1 val1 key2 val2 ....)</h4>
+<p>Create a Javascript Object.</p>
+<pre>(object "a" 1 "b" 2 "c" 3) => {a: 1, b:2, c:3}
+</pre>
+
+<h4>(new Classname arg1 arg2 ....)</h4>
+<p>Instantiate a new Javascript Object.</p>
+<pre>(new Date)
+(new Date "October 13, 1975 11:13:00")
+</pre>
+
 <h4>(if (condition) (if true expression) (if false expression))</h4>
 <p>If takes a conditional expression and evaluates the true expression if the condition is true, or the false
 expression otherwise.</p>
+
 <h4>(do (expression1) (expression2) ...)</h4>
 <p>The do statement evaluates a set of expressions passed as it arguments.</p>
+
 <h4>(when (condition) (expression1) (expression2) ...)</h4>
 <p>The when statement evaluates a set of expressions passed as it arguments when the condition is true.</p>
+
 <h4>(unless (condition) (expression1) (expression2) ...)</h4>
 <p>The unless statement evaluates a set of expressions passed as it arguments when the condition is false.</p>
+
 <h4>(function (arguments expression) (expression1) (expression2) ... )</h4>
 <p>Creates an anonymous function.</p>
+
 <h4>(try (expression1) (expression2) ... (catch function))</h4>
 <p>Try takes a set of expressions and evaluates them. The last expression must be a function, that
 will be called in case an exception is thrown. The function is called with the error object.</p>
@@ -302,7 +329,7 @@ will be called in case an exception is thrown. The function is called with the e
 <a name="sequence"></a>
 <p>Comments in LispyScript start with a <code>;</code> and span the rest of the line.</p>
 
-<h2>Callback Sequence</h2>
+<h2 style="padding-top:40px">Callback Sequence</h2>
 <p>LispyScript allows you to avoid writing nested callbacks, by a callback sequence feature. You write your callbacks
 in a series (sequence). All the functions in the series are exposed to a functions called "next". Calling "next"
 returns the next callback in the sequence. So just pass the return value of next, when you call a callback.
@@ -310,7 +337,7 @@ returns the next callback in the sequence. So just pass the return value of next
 You can see an example with some notes on usage <a href="https://gist.github.com/3715526">here</a>.
 </p>
 
-<h2>Testing</h2>
+<h2 style="padding-top:40px">Testing</h2>
 <p>LispyScript comes with some built in testing features to let you test your code while developing. However if
 you find that the features offered in the built in tests are not enough, you can use any of the javascript
 test frameworks available.</p>
@@ -325,7 +352,7 @@ testGroup which is invoked by the testRunner.</p>
 <a name="browser"></a>
 which will be shown at the top of your test results. It returns the test results as a string.</p>
          
-<h2>Browser Compatibility</h2>
+<h2 style="padding-top:40px">Browser Compatibility</h2>
 <p>The compiled Javascript code is compatible with all modern browsers.</p>
 <p>However since Lispyscript allows you to call Javascript functions directly from LispyScript,
 you need to guard against calling non standard native functions. eg. If you call the Javascript "forEach" from

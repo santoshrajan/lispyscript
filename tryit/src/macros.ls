@@ -1,29 +1,39 @@
 ;; List of built in macros for LispyScript. This file is included by
 ;; default by the LispyScript compiler.
 
-(macro object? (obj)
-  (= (typeof ~obj) "object"))
-
-(macro array? (obj)
-  (= (toString.call ~obj) "[object Array]"))
-
-(macro string? (obj)
-  (= (toString.call ~obj) "[object String]"))
-
-(macro number? (obj)
-  (= (toString.call ~obj) "[object Number]"))
-
-(macro boolean? (obj)
-  (= (typeof ~obj) "boolean"))
-
-(macro function? (obj)
-  (= (toString.call ~obj) "[object Function]"))
-
 (macro undefined? (obj)
   (= (typeof ~obj) "undefined"))
 
 (macro null? (obj)
   (= ~obj null))
+
+(macro true? (obj)
+  (= true ~obj))
+
+(macro false? (obj)
+  (= false ~obj))
+
+(macro boolean? (obj)
+  (= (typeof ~obj) "boolean"))
+
+(macro zero? (obj)
+  (= 0 ~obj))
+
+(macro number? (obj)
+  (= (Object.prototype.toString.call ~obj) "[object Number]"))
+
+(macro string? (obj)
+  (= (Object.prototype.toString.call ~obj) "[object String]"))
+
+(macro array? (obj)
+  (= (Object.prototype.toString.call ~obj) "[object Array]"))
+
+(macro object? (obj)
+  ((function (obj)
+    (= obj (Object obj))) ~obj))
+
+(macro function? (obj)
+  (= (Object.prototype.toString.call ~obj) "[object Function]"))
 
 (macro do (rest...)
   ((function () ~rest...)))
@@ -34,18 +44,44 @@
 (macro unless (cond rest...)
   (when (! ~cond) (do ~rest...)))
 
+(macro array (rest...)
+  ((function ()
+    (Array.prototype.slice.call arguments)) ~rest...))
+
+(macro object (rest...)
+  ((function ()
+    (var r {})
+    (javascript "for(var i=0,l=arguments.length;i<l;i+=2)r[arguments[i]]=arguments[i+1];")
+    r) ~rest...))
+
 (macro each (rest...)
-  (Array.prototype.forEach.call ~rest...))
-  
-(macro eachKey (obj callback rest...)
-  ((function (obj callback context)
-    (each (Object.keys obj)
+  ((function (o f s)
+    (javascript "if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)}")
+    undefined) ~rest...))
+ 
+(macro eachKey (rest...)
+  ((function (o f s)
+    (javascript "var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in o)k.push(i)}")
+    (each k
       (function (elem)
-        (callback.call context (get elem obj) elem obj))))
-   ~obj ~callback ~rest...))
+        (f.call s (get elem o) elem o)))) ~rest...))
+
+(macro reduce (rest...)
+  ((function (arr f init)
+    (if (< arguments.length 3)
+      (set init (arr.shift)))
+    (each arr
+      (function (val i list)
+        (set init (f init val i list))))
+    init) ~rest...))
 
 (macro map (rest...)
-  (Array.prototype.map.call ~rest...))
+  ((function (arr f scope)
+    (var result [])
+    (each arr
+      (function (val i list)
+        (result.push (f.call scope val i list))))
+    result) ~rest...))
 
 (macro filter (rest...)
   (Array.prototype.filter.call ~rest...))
@@ -55,9 +91,6 @@
 
 (macro every (rest...)
   (Array.prototype.every.call ~rest...))
-
-(macro reduce (rest...)
-  (Array.prototype.reduce.call ~rest...))
 
 (macro template (name args rest...)
   (var ~name
@@ -97,6 +130,54 @@
           undefined
           (do
             (set _result undefined)
-            (javascript "while (_result === undefined) _result = _f.apply(this, _nextArgs)")
+            (javascript "while(_result===undefined) _result=_f.apply(this,_nextArgs)")
             _result))))
     (recur ~@vals))))
+
+(macro sequence (name args init rest...)
+  (var ~name
+    (function ~args
+      ((function ()
+        (var _curr 0)
+        (var next
+          (function ()
+            (var ne (get _curr++ actions))
+            (if ne
+              ne
+              (throw "Call to (next) beyond sequence."))))
+        (var actions (new Array ~rest...))
+        ~@init
+        ((next)))))))
+
+(macro assert (cond message)
+  (if (true? ~cond)
+    (+ "Passed - " ~message)
+    (+ "Failed - " ~message)))
+
+(macro testGroup (name rest...)
+  (var ~name 
+    (function ()
+      (array ~rest...))))
+
+(macro testRunner (groupname desc)
+  ((function (groupname)
+    (var start (new Date))
+    (var tests (groupname))
+    (var passed 0)
+    (var failed 0)
+    (each (groupname)
+      (function (elem)
+        (if (elem.match /^Passed/)
+          ++passed
+          ++failed)))
+    (str 
+      (str "\n" ~desc "\n" start "\n\n")
+      (template-repeat tests elem "\n")
+      "\nTotal tests " tests.length 
+      "\nPassed " passed 
+      "\nFailed " failed 
+      "\nDuration " (- (new Date) start) "ms\n")) ~groupname))
+
+
+
+
