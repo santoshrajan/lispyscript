@@ -105,17 +105,17 @@ var lispyscript = function() {
         ("Failed - " + "each test")),((true === (10 === (function() {
             var ret = 0;
             (function(o,f,s) {
-                var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in o)k.push(i)};
+                var _k;if(Object.keys){_k=Object.keys(o)}else{_k=[];for(var i in o)_k.push(i)};
                 return (function(o,f,s) {
                     if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
                     return undefined;
-                })(k,function(elem) {
+                })(_k,function(elem) {
                     return f.call(s,o[elem],elem,o);
                 });
             })((function() {
-                var r = {};
-                for(var i=0,l=arguments.length;i<l;i+=2)r[arguments[i]]=arguments[i+1];;
-                return r;
+                var _r = {};
+                for(var i=0,l=arguments.length;i<l;i+=2)_r[arguments[i]]=arguments[i+1];;
+                return _r;
             })("a",1,"b",2,"c",3,"d",4),function(val,key,obj) {
                 return ret = (ret + val);
             });
@@ -151,14 +151,14 @@ var lispyscript = function() {
             });
             return init;
         })((function(arr,f,scope) {
-            var result = [];
+            var _r = [];
             (function(o,f,s) {
                 if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
                 return undefined;
             })(arr,function(val,i,list) {
-                return result.push(f.call(scope,val,i,list));
+                return _r.push(f.call(scope,val,i,list));
             });
-            return result;
+            return _r;
         })((function() {
             return Array.prototype.slice.call(arguments);
         })(1,2,3,4),function(val,i,list) {
@@ -169,7 +169,23 @@ var lispyscript = function() {
         ("Passed - " + "map test") :
         ("Failed - " + "map test")),((true === ("112233" === testTemplate(1,2,3))) ?
         ("Passed - " + "template test") :
-        ("Failed - " + "template test")));
+        ("Failed - " + "template test")),((true === ("112233" === (function() {
+            var _ret = "";
+            (function(o,f,s) {
+                var _k;if(Object.keys){_k=Object.keys(o)}else{_k=[];for(var i in o)_k.push(i)};
+                return (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
+                    return undefined;
+                })(_k,function(elem) {
+                    return f.call(s,o[elem],elem,o);
+                });
+            })({"1":1,"2":2,"3":3},function(value,key) {
+                return _ret = (_ret + [key,value].join(''));
+            });
+            return _ret;
+        })())) ?
+        ("Passed - " + "template repeat key test") :
+        ("Failed - " + "template repeat key test")));
 };
 var browserTest = function() {
     var el = document.getElementById("testresult");
@@ -198,8 +214,8 @@ var browserTest = function() {
                     return init = f(init,val,i,list);
                 });
                 return init;
-            })(tests,function(memo,elem,index) {
-                return (memo + [elem,"\n"].join(''));
+            })(tests,function(_template_repeat_memo,elem,index) {
+                return (_template_repeat_memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
         })(lispyscript),"</pre>"].join('') :
         el.innerHTML = (function(groupname) {
@@ -226,8 +242,8 @@ var browserTest = function() {
                     return init = f(init,val,i,list);
                 });
                 return init;
-            })(tests,function(memo,elem,index) {
-                return (memo + [elem,"\n"].join(''));
+            })(tests,function(_template_repeat_memo,elem,index) {
+                return (_template_repeat_memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
         })(lispyscript));
 };
@@ -256,8 +272,8 @@ var browserTest = function() {
                 return init = f(init,val,i,list);
             });
             return init;
-        })(tests,function(memo,elem,index) {
-            return (memo + [elem,"\n"].join(''));
+        })(tests,function(_template_repeat_memo,elem,index) {
+            return (_template_repeat_memo + [elem,"\n"].join(''));
         },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
     })(lispyscript)) :
     window.onload = browserTest);
