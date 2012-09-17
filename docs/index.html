@@ -93,6 +93,9 @@
              <li>
               <a href="#browser">Browser Compatibility</a>
             </li>
+             <li>
+              <a href="#guidelines">Programming Guidelines</a>
+            </li>
           </ul>        
         </div>
         <div class='span8'>
@@ -349,9 +352,9 @@ with "Passed " or "Failed " added to your message. </p>
 testGroup which is invoked by the testRunner.</p>
 <h4>(testRunner groupname "Desription")</h4>
 <p>Call testRunner to invoke your test group. Pass it the name of the test group and a string description
-<a name="browser"></a>
 which will be shown at the top of your test results. It returns the test results as a string.</p>
          
+<a name="browser"></a>
 <h2 style="padding-top:40px">Browser Compatibility</h2>
 <p>The compiled Javascript code is compatible with all modern browsers.</p>
 <p>However since Lispyscript allows you to call Javascript functions directly from LispyScript,
@@ -360,6 +363,30 @@ LispyScript, this will not work in IE8. So instead use LispyScript "each" instea
 <p>You can also run LispyScript directly in your browser. Thats how the LispyScript tryit page works.
 However this is not recommended, because compiling your LispyScript and loading the compiled Javascript will
 always be faster.</p>
+
+         
+<a name="guidelines"></a>
+<h2 style="padding-top:40px">Programming Guidelines</h2>
+<ol>
+  <li>You MUST use the "var" keyword when you create a variable. Otherwise this could lead to nasty surprises. This is
+    also true of Javascript.</li>
+  <li>Variable names starting with three underscores (___varname) are reserverd for LispyScript. You should not
+    start a variable name with three underscores. Except in a special case which we will come to.</li>
+  <li>Use macros with caution. In most cases a function would serve the purpose. In which case use a function.</li>
+  <li>Write macros if you want to add new features to LispyScript or create a domain specific Language.</li>
+  <li>And when you write macros be very careful when you create a variable inside your macro, either using var or as function argument names. Because if the arguments to your macro get dereferenced (eg. ~arg or ~rest...) in the same scope as the variables you created, there is chance for a variable capture situation. This happens when the user of your macro 
+  has a variable with the same name and has used it in the argument passed to the macro.
+  You can get around this in the following ways.
+    <ul>
+      <li>Obviously if your macro does not create any variables you are fine. There are many macros like that.</li>
+      <li>If your macro is or has an immediately evaluated function, and the macro args get dereferenced as arguments
+        to that function, you are fine again. Because the macro args get dereferenced outside the function. This is
+        also a common situation in LispyScript. As far as possible try to get into this situation.</li>
+      <li>If the variable you create needs to be accessed by the dereferenced code you are fine again</li>
+      <li>If you still need to dereference the macro arg in the same scope as a variable created by you, then makes
+        sure of two things. First that the variable you create is inside a function (usually the case), and second make sure the name starts with three underscores.</li>
+    </ul>
+</ol>
 
         </div>
       </div>
