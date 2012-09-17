@@ -69,21 +69,21 @@ var lispyscript = function() {
         ("Passed - " + "unless test") :
         ("Failed - " + "unless test")),((true === (10 === (function() {
             var recur = null;
-            var _result = !undefined;
-            var _nextArgs = null;
-            var _f = function(i) {
+            var ___result = !undefined;
+            var ___nextArgs = null;
+            var ___f = function(i) {
                 return ((i === 10) ?
                     i :
                     recur(++i));
             };
             recur = function() {
-                _nextArgs = arguments;
-                return ((_result === undefined) ?
+                ___nextArgs = arguments;
+                return ((___result === undefined) ?
                     undefined :
                     (function() {
-                        _result = undefined;
-                        while(_result===undefined) _result=_f.apply(this,_nextArgs);
-                        return _result;
+                        ___result = undefined;
+                        while(___result===undefined) ___result=___f.apply(this,___nextArgs);
+                        return ___result;
                     })());
             };
             return recur(1);
@@ -105,17 +105,17 @@ var lispyscript = function() {
         ("Failed - " + "each test")),((true === (10 === (function() {
             var ret = 0;
             (function(o,f,s) {
-                var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in o)k.push(i)};
+                var _k;if(Object.keys){_k=Object.keys(o)}else{_k=[];for(var i in o)_k.push(i)};
                 return (function(o,f,s) {
                     if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
                     return undefined;
-                })(k,function(elem) {
+                })(_k,function(elem) {
                     return f.call(s,o[elem],elem,o);
                 });
             })((function() {
-                var r = {};
-                for(var i=0,l=arguments.length;i<l;i+=2)r[arguments[i]]=arguments[i+1];;
-                return r;
+                var _r = {};
+                for(var i=0,l=arguments.length;i<l;i+=2)_r[arguments[i]]=arguments[i+1];;
+                return _r;
             })("a",1,"b",2,"c",3,"d",4),function(val,key,obj) {
                 return ret = (ret + val);
             });
@@ -151,14 +151,14 @@ var lispyscript = function() {
             });
             return init;
         })((function(arr,f,scope) {
-            var result = [];
+            var _r = [];
             (function(o,f,s) {
                 if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
                 return undefined;
             })(arr,function(val,i,list) {
-                return result.push(f.call(scope,val,i,list));
+                return _r.push(f.call(scope,val,i,list));
             });
-            return result;
+            return _r;
         })((function() {
             return Array.prototype.slice.call(arguments);
         })(1,2,3,4),function(val,i,list) {
@@ -169,12 +169,28 @@ var lispyscript = function() {
         ("Passed - " + "map test") :
         ("Failed - " + "map test")),((true === ("112233" === testTemplate(1,2,3))) ?
         ("Passed - " + "template test") :
-        ("Failed - " + "template test")));
+        ("Failed - " + "template test")),((true === ("112233" === (function() {
+            var ___ret = "";
+            (function(o,f,s) {
+                var _k;if(Object.keys){_k=Object.keys(o)}else{_k=[];for(var i in o)_k.push(i)};
+                return (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)};
+                    return undefined;
+                })(_k,function(elem) {
+                    return f.call(s,o[elem],elem,o);
+                });
+            })({"1":1,"2":2,"3":3},function(value,key) {
+                return ___ret = (___ret + [key,value].join(''));
+            });
+            return ___ret;
+        })())) ?
+        ("Passed - " + "template repeat key test") :
+        ("Failed - " + "template repeat key test")));
 };
 var browserTest = function() {
     var el = document.getElementById("testresult");
     return (el.outerHTML ?
-        el.outerHTML = ["<pre>",(function(groupname) {
+        el.outerHTML = ["<pre>",(function(groupname,desc) {
             var start = new Date();
             var tests = groupname();
             var passed = 0;
@@ -187,7 +203,7 @@ var browserTest = function() {
                     ++passed :
                     ++failed);
             });
-            return [["\n","LispyScript Testing","\n",start,"\n\n"].join(''),(function(arr,f,init) {
+            return [["\n",desc,"\n",start,"\n\n"].join(''),(function(arr,f,init) {
                 ((arguments.length < 3) ?
                     init = arr.shift() :
                     undefined);
@@ -198,11 +214,11 @@ var browserTest = function() {
                     return init = f(init,val,i,list);
                 });
                 return init;
-            })(tests,function(memo,elem,index) {
-                return (memo + [elem,"\n"].join(''));
+            })(tests,function(___memo,elem,index) {
+                return (___memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
-        })(lispyscript),"</pre>"].join('') :
-        el.innerHTML = (function(groupname) {
+        })(lispyscript,"LispyScript Testing"),"</pre>"].join('') :
+        el.innerHTML = (function(groupname,desc) {
             var start = new Date();
             var tests = groupname();
             var passed = 0;
@@ -215,7 +231,7 @@ var browserTest = function() {
                     ++passed :
                     ++failed);
             });
-            return [["\n","LispyScript Testing","\n",start,"\n\n"].join(''),(function(arr,f,init) {
+            return [["\n",desc,"\n",start,"\n\n"].join(''),(function(arr,f,init) {
                 ((arguments.length < 3) ?
                     init = arr.shift() :
                     undefined);
@@ -226,13 +242,13 @@ var browserTest = function() {
                     return init = f(init,val,i,list);
                 });
                 return init;
-            })(tests,function(memo,elem,index) {
-                return (memo + [elem,"\n"].join(''));
+            })(tests,function(___memo,elem,index) {
+                return (___memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
-        })(lispyscript));
+        })(lispyscript,"LispyScript Testing"));
 };
 ((typeof(window) === "undefined") ?
-    console.log((function(groupname) {
+    console.log((function(groupname,desc) {
         var start = new Date();
         var tests = groupname();
         var passed = 0;
@@ -245,7 +261,7 @@ var browserTest = function() {
                 ++passed :
                 ++failed);
         });
-        return [["\n","LispyScript Testing","\n",start,"\n\n"].join(''),(function(arr,f,init) {
+        return [["\n",desc,"\n",start,"\n\n"].join(''),(function(arr,f,init) {
             ((arguments.length < 3) ?
                 init = arr.shift() :
                 undefined);
@@ -256,8 +272,8 @@ var browserTest = function() {
                 return init = f(init,val,i,list);
             });
             return init;
-        })(tests,function(memo,elem,index) {
-            return (memo + [elem,"\n"].join(''));
+        })(tests,function(___memo,elem,index) {
+            return (___memo + [elem,"\n"].join(''));
         },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
-    })(lispyscript)) :
+    })(lispyscript,"LispyScript Testing")) :
     window.onload = browserTest);
