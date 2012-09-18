@@ -50,9 +50,9 @@
 
 (macro object (rest...)
   ((function ()
-    (var r {})
-    (javascript "for(var i=0,l=arguments.length;i<l;i+=2)r[arguments[i]]=arguments[i+1];")
-    r) ~rest...))
+    (var _r {})
+    (javascript "for(var i=0,l=arguments.length;i<l;i+=2)_r[arguments[i]]=arguments[i+1];")
+    _r) ~rest...))
 
 (macro each (rest...)
   ((function (o f s)
@@ -61,8 +61,8 @@
  
 (macro eachKey (rest...)
   ((function (o f s)
-    (javascript "var k;if(Object.keys){k=Object.keys(o)}else{k=[];for(var i in o)k.push(i)}")
-    (each k
+    (javascript "var _k;if(Object.keys){_k=Object.keys(o)}else{_k=[];for(var i in o)_k.push(i)}")
+    (each _k
       (function (elem)
         (f.call s (get elem o) elem o)))) ~rest...))
 
@@ -77,11 +77,11 @@
 
 (macro map (rest...)
   ((function (arr f scope)
-    (var result [])
+    (var _r [])
     (each arr
       (function (val i list)
-        (result.push (f.call scope val i list))))
-    result) ~rest...))
+        (_r.push (f.call scope val i list))))
+    _r) ~rest...))
 
 (macro filter (rest...)
   (Array.prototype.filter.call ~rest...))
@@ -99,16 +99,16 @@
 
 (macro template-repeat (arg rest...)
   (reduce ~arg
-    (function (memo elem index)
-      (+ memo (str ~rest...))) ""))
+    (function (___memo elem index)
+      (+ ___memo (str ~rest...))) ""))
 
 (macro template-repeat-key (obj rest...)
   (do
-    (var ret "")
+    (var ___ret "")
     (eachKey ~obj
       (function (value key)
-        (set ret (+ ret (str ~rest...)))))
-    ret))
+        (set ___ret (+ ___ret (str ~rest...)))))
+    ___ret))
 
 ;; Tail call optimised loop recur construct
 ;; Takes a set of args, initial values, and body
@@ -120,32 +120,32 @@
 (macro loop (args vals rest...)
   ((function ()
     (var recur null)
-    (var _result !undefined)
-    (var _nextArgs null)
-    (var _f (function ~args ~rest...))
+    (var ___result !undefined)
+    (var ___nextArgs null)
+    (var ___f (function ~args ~rest...))
     (set recur
       (function ()
-        (set _nextArgs arguments)
-        (if (= _result undefined)
+        (set ___nextArgs arguments)
+        (if (= ___result undefined)
           undefined
           (do
-            (set _result undefined)
-            (javascript "while(_result===undefined) _result=_f.apply(this,_nextArgs)")
-            _result))))
+            (set ___result undefined)
+            (javascript "while(___result===undefined) ___result=___f.apply(this,___nextArgs)")
+            ___result))))
     (recur ~@vals))))
 
 (macro sequence (name args init rest...)
   (var ~name
     (function ~args
       ((function ()
-        (var _curr 0)
+        (var ___curr 0)
         (var next
           (function ()
-            (var ne (get _curr++ actions))
+            (var ne (get ___curr++ ___actions))
             (if ne
               ne
               (throw "Call to (next) beyond sequence."))))
-        (var actions (new Array ~rest...))
+        (var ___actions (new Array ~rest...))
         ~@init
         ((next)))))))
 
@@ -160,7 +160,7 @@
       (array ~rest...))))
 
 (macro testRunner (groupname desc)
-  ((function (groupname)
+  ((function (groupname desc)
     (var start (new Date))
     (var tests (groupname))
     (var passed 0)
@@ -171,12 +171,12 @@
           ++passed
           ++failed)))
     (str 
-      (str "\n" ~desc "\n" start "\n\n")
+      (str "\n" desc "\n" start "\n\n")
       (template-repeat tests elem "\n")
       "\nTotal tests " tests.length 
       "\nPassed " passed 
       "\nFailed " failed 
-      "\nDuration " (- (new Date) start) "ms\n")) ~groupname))
+      "\nDuration " (- (new Date) start) "ms\n")) ~groupname ~desc))
 
 
 
