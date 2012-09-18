@@ -6,11 +6,15 @@
 ## A Javascript with Lispy syntax and Macros!
 Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
 
-An inherent problem with Javascript is that it has no
-macro support, like other Lisp like languages. That's because macros manipulate the syntax tree while
-compiling. And this is next to impossible in a language like Javascript. In LispyScript we write Javascript
-in a tree structure. If you know Javascript and a Lisp like language, then using LispyScript will be a
-breeze. Even if you don't know a Lispy Language, all you need to learn is to write code in a tree structure.
+## Features
+* Javscript Semantics
+* Macros
+* Tail Call Optimization
+* Templates
+* Callback Sequence (avoid nested callbacks)
+* Browser compatible 
+* Unit test feature
+
 
 #### LispyScript was inspired by [Beating the averages](http://www.paulgraham.com/avg.html).
 
@@ -22,6 +26,11 @@ Santosh Rajan [santoshrajan](https://github.com/santoshrajan).
 Irakli Gozalishvili [Gozala](https://github.com/Gozala).  
 
 ### Change Log
+
+### Version 0.2.4, 18 Sep 2012
+
+Added array and object keywords.  
+Macros follow guidelines now.   
 
 ### Version 0.2.3, 15 Sep 2012
 
