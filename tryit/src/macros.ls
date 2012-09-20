@@ -51,28 +51,29 @@
 (macro object (rest...)
   ((function ()
     (var _r {})
-    (javascript "for(var i=0,l=arguments.length;i<l;i+=2)_r[arguments[i]]=arguments[i+1];")
+    (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
     _r) ~rest...))
 
 (macro each (rest...)
   ((function (o f s)
-    (javascript "if(o.forEach){o.forEach(f,s)}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o)}")
+    (javascript "if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}")
     undefined) ~rest...))
  
 (macro eachKey (rest...)
   ((function (o f s)
-    (javascript "var _k;if(Object.keys){_k=Object.keys(o)}else{_k=[];for(var i in o)_k.push(i)}")
+    (javascript "var _k;if(Object.keys){_k=Object.keys(o);}else{_k=[];for(var i in o)_k.push(i);}")
     (each _k
       (function (elem)
         (f.call s (get elem o) elem o)))) ~rest...))
 
 (macro reduce (rest...)
   ((function (arr f init)
-    (if (< arguments.length 3)
-      (set init (arr.shift)))
+    (var noInit (< arguments.length 3))
     (each arr
       (function (val i list)
-        (set init (f init val i list))))
+        (if (&& (= i 0) noInit)
+          (set init val)
+          (set init (f init val i list)))))
     init) ~rest...))
 
 (macro map (rest...)
@@ -130,7 +131,7 @@
           undefined
           (do
             (set ___result undefined)
-            (javascript "while(___result===undefined) ___result=___f.apply(this,___nextArgs)")
+            (javascript "while(___result===undefined) ___result=___f.apply(this,___nextArgs);")
             ___result))))
     (recur ~@vals))))
 
@@ -138,15 +139,16 @@
   (var ~name
     (function ~args
       ((function ()
+        ~@init
+        (var next null)
         (var ___curr 0)
-        (var next
+        (var ___actions (new Array ~rest...))
+        (set next
           (function ()
             (var ne (get ___curr++ ___actions))
             (if ne
               ne
               (throw "Call to (next) beyond sequence."))))
-        (var ___actions (new Array ~rest...))
-        ~@init
         ((next)))))))
 
 (macro assert (cond message)
@@ -165,7 +167,7 @@
     (var tests (groupname))
     (var passed 0)
     (var failed 0)
-    (each (groupname)
+    (each tests
       (function (elem)
         (if (elem.match /^Passed/)
           ++passed
