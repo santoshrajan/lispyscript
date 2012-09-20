@@ -27,6 +27,10 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.5, 20 Sep 2012
+
+Bug Fixes  
+
 ### Version 0.2.4, 18 Sep 2012
 
 Added array and object keywords.  

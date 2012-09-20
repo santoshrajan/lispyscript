@@ -11,7 +11,6 @@
 (assert (true? true) "(true? true)")
 (assert (false? false) "(false? false)")
 (assert (false? (true? {})) "(false? (true? {}))")
-(assert (! false) "(! false)")
 (assert (undefined? undefined) "(undefined? undefined)")
 (assert (false? (undefined? null)) "(false? (undefined? null))")
 (assert (null? null) "(null? null)")
@@ -49,7 +48,7 @@
     (do
       (var ret 0)
       (each (array 1 2 3 4)
-        (function (val i obj)
+        (function (val)
           (set ret (+ ret val))))
       ret)) "each test")
 (assert
@@ -57,21 +56,32 @@
     (do
       (var ret 0)
       (eachKey (object "a" 1 "b" 2 "c" 3 "d" 4)
-        (function (val key obj)
+        (function (val)
           (set ret (+ ret val))))
       ret)) "eachKey test")
 (assert 
   (= 10
     (reduce (array 1 2 3 4)
-      (function (accum val i list)
-        (+ accum val)) 0)) "reduce test")
+      (function (accum val)
+        (+ accum val)) 0)) "reduce test with init")
+(assert 
+  (= 10
+    (reduce (array 1 2 3 4)
+      (function (accum val)
+        (+ accum val)))) "reduce test without init")
 (assert 
   (= 20
-    (reduce (map (array 1 2 3 4) (function (val i list) (* val 2)))
-      (function (accum val i list)
+    (reduce (map (array 1 2 3 4) (function (val) (* val 2)))
+      (function (accum val)
         (+ accum val)) 0)) "map test")
 (assert (= "112233" (testTemplate 1 2 3)) "template test")
 (assert (= "112233" (template-repeat-key {"1":1,"2":2,"3":3} key value)) "template repeat key test")
+(assert
+  (= 10 
+    (try (var i 10) i (function (err)))) "try catch test - try block")
+(assert
+  (= 10 
+    (try (throw 10) (function (err) err))) "try catch test - catch block")
 
 )
 
