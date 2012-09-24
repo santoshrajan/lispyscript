@@ -1,4 +1,3 @@
-
 ;; A template def for template test
 (template testTemplate (one two three)
   "1" one "2" two "3" three)
@@ -37,6 +36,38 @@
     (unless false
       (var ret 10)
       ret)) "unless test")
+(assert
+  (= -10 
+    (do
+      (var i -1)
+      (cond
+        (< i 0) -10
+        (zero? i) 0
+        (> i 0) 10))) "condition test less than")
+(assert
+  (= 10 
+    (do
+      (var i 1)
+      (cond
+        (< i 0) -10
+        (zero? i) 0
+        (> i 0) 10))) "condition test greater than")
+(assert
+  (= 0 
+    (do
+      (var i 0)
+      (cond
+        (< i 0) -10
+        (zero? i) 0
+        (> i 0) 10))) "condition test equal to")
+(assert
+  (= 10 
+    (do
+      (var i Infinity)
+      (cond
+        (< i 0) -10
+        (zero? i) 0
+        true 10))) "condition test default")
 (assert
   (= 10
     (loop (i) (1)
@@ -101,3 +132,4 @@
 (if (undefined? window)
   (console.log (testRunner lispyscript "LispyScript Testing"))
   (set window.onload browserTest))
+

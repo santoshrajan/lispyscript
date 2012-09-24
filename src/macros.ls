@@ -44,6 +44,9 @@
 (macro unless (cond rest...)
   (when (! ~cond) (do ~rest...)))
 
+(macro cond (first second rest...)
+  (if ~first ~second (cond ~rest...)))
+
 (macro array (rest...)
   ((function ()
     (Array.prototype.slice.call arguments)) ~rest...))
@@ -54,19 +57,19 @@
     (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
     _r) ~rest...))
 
-(macro each (rest...)
+(macro each (obj fn rest...)
   ((function (o f s)
     (javascript "if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}")
-    undefined) ~rest...))
+    undefined) ~obj ~fn ~rest...))
  
-(macro eachKey (rest...)
+(macro eachKey (obj fn rest...)
   ((function (o f s)
     (javascript "var _k;if(Object.keys){_k=Object.keys(o);}else{_k=[];for(var i in o)_k.push(i);}")
     (each _k
       (function (elem)
-        (f.call s (get elem o) elem o)))) ~rest...))
+        (f.call s (get elem o) elem o)))) ~obj ~fn ~rest...))
 
-(macro reduce (rest...)
+(macro reduce (arr fn rest...)
   ((function (arr f init)
     (var noInit (< arguments.length 3))
     (each arr
@@ -74,15 +77,15 @@
         (if (&& (= i 0) noInit)
           (set init val)
           (set init (f init val i list)))))
-    init) ~rest...))
+    init) ~arr ~fn ~rest...))
 
-(macro map (rest...)
+(macro map (arr fn rest...)
   ((function (arr f scope)
     (var _r [])
     (each arr
       (function (val i list)
         (_r.push (f.call scope val i list))))
-    _r) ~rest...))
+    _r) ~arr ~fn ~rest...))
 
 (macro filter (rest...)
   (Array.prototype.filter.call ~rest...))
