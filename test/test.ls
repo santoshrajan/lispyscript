@@ -113,6 +113,15 @@
 (assert
   (= 10 
     (try (throw 10) (function (err) err))) "try catch test - catch block")
+(assert
+  (= 3
+    (doMonad identityMonad (a 1 b (* a 2)) (+ a b))) "Identity Monad Test")
+(assert
+  (= 3
+    (doMonad maybeMonad (a 1 b (* a 2)) (+ a b))) "maybe Monad Test")
+(assert
+  (= null
+    (doMonad maybeMonad (a null b (* a 2)) (+ a b))) "maybe Monad null Test")
 
 )
 

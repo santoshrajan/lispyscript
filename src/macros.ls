@@ -1,6 +1,9 @@
 ;; List of built in macros for LispyScript. This file is included by
 ;; default by the LispyScript compiler.
 
+
+;;;;;;;;;;;;;;;;;;;; Operators ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (macro undefined? (obj)
   (= (typeof ~obj) "undefined"))
 
@@ -35,6 +38,9 @@
 (macro function? (obj)
   (= (Object.prototype.toString.call ~obj) "[object Function]"))
 
+
+;;;;;;;;;;;;;;;;;;;;;;; Statements ;;;;;;;;;;;;;;;;;;;;
+
 (macro do (rest...)
   ((function () ~rest...)))
 
@@ -56,6 +62,9 @@
     (var _r {})
     (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
     _r) ~rest...))
+
+
+;;;;;;;;;;;;;;;;;;;;;; Iteration and Looping ;;;;;;;;;;;;;;;;;;;;
 
 (macro each (obj fn rest...)
   ((function (o f s)
@@ -96,6 +105,26 @@
 (macro every (rest...)
   (Array.prototype.every.call ~rest...))
 
+(macro loop (args vals rest...)
+  ((function ()
+    (var recur null)
+    (var ___result !undefined)
+    (var ___nextArgs null)
+    (var ___f (function ~args ~rest...))
+    (set recur
+      (function ()
+        (set ___nextArgs arguments)
+        (if (= ___result undefined)
+          undefined
+          (do
+            (set ___result undefined)
+            (javascript "while(___result===undefined) ___result=___f.apply(this,___nextArgs);")
+            ___result))))
+    (recur ~@vals))))
+
+
+;;;;;;;;;;;;;;;;;;;; Templates ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (macro template (name args rest...)
   (var ~name
     (function ~args
@@ -114,29 +143,8 @@
         (set ___ret (+ ___ret (str ~rest...)))))
     ___ret))
 
-;; Tail call optimised loop recur construct
-;; Takes a set of args, initial values, and body
-;; eg. (loop (arg1 arg2 arg3) (init1 init2 init3)
-;;       ....
-;;       (recur val1 val2 val3))
-;; The body MUST evaluate to a NON undefined value to break from the loop.
-;; null, 0 and other falsy values are ok to break from the loop.
-(macro loop (args vals rest...)
-  ((function ()
-    (var recur null)
-    (var ___result !undefined)
-    (var ___nextArgs null)
-    (var ___f (function ~args ~rest...))
-    (set recur
-      (function ()
-        (set ___nextArgs arguments)
-        (if (= ___result undefined)
-          undefined
-          (do
-            (set ___result undefined)
-            (javascript "while(___result===undefined) ___result=___f.apply(this,___nextArgs);")
-            ___result))))
-    (recur ~@vals))))
+
+;;;;;;;;;;;;;;;;;;;; Callback Sequence ;;;;;;;;;;;;;;;;;;;;;
 
 (macro sequence (name args init rest...)
   (var ~name
@@ -153,6 +161,9 @@
               ne
               (throw "Call to (next) beyond sequence."))))
         ((next)))))))
+
+
+;;;;;;;;;;;;;;;;;;; Unit Testing ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (macro assert (cond message)
   (if (true? ~cond)
@@ -183,6 +194,53 @@
       "\nFailed " failed 
       "\nDuration " (- (new Date) start) "ms\n")) ~groupname ~desc))
 
+
+;;;;;;;;;;;;;;;; Monads ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(macro identityMonad ()
+  (object
+    "mBind" (function (mv mf) (mf mv))
+    "mResult" (function (v) v)))
+
+(macro maybeMonad ()
+  (object
+    "mBind" (function (mv mf) (console.log mv) (if (null? mv) null (mf mv)))
+    "mResult" (function (v) v)
+    "mZero" null))
+
+(macro arrayMonad ()
+  (object
+    "mBind" (function (mv mf) (reduce (map mv mf) (function (accum val) (accum.concat val)) []))
+    "mResult" (function (v) [v])
+    "mZero" []
+    "mPlus" (function () (reduce (Array.prototype.slice.call arguments) (function (accum val) (accum.concat val)) []))))
+
+(macro stateMonad ()
+  (object
+    "mBind" (function (mv f) (function (s) (var l (mv s)) (var v l[0]) (var ss l[1]) ((f v) ss)))
+    "mResult" (function (v) (function (s) [v, s]))))
+
+(macro m-bind (first second rest...)
+  (mBind ~second
+    (function (~first)
+      (m-bind ~rest...))))
+
+(macro withMonad (monad rest...)
+  ((function (___monad)
+    (var mBind ___monad.mBind)
+    (var mResult ___monad.mResult)
+    (var mZero ___monad.mZero)
+    (var mPlus ___monad.mPlus)
+    ~rest...) (~monad)))
+
+(macro doMonad (monad bindings expr)
+  (withMonad ~monad
+    (var ____mResult
+      (function (___arg)
+        (if (&& (undefined? ___arg) (! (undefined? mZero)))
+          mZero
+          (mResult ___arg))))
+    (m-bind ~@bindings (____mResult ~expr))))
 
 
 
