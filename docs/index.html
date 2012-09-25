@@ -70,20 +70,23 @@
 
         <div class='span4'>
           <ul class="nav nav-list">
-            <li class="active">
-              <a href="#macros">Macros</a>
-            </li>
-            <li>
-              <a href="#templates">Templates</a>
-            </li>
             <li>
               <a href="#operators">Operators</a>
             </li>
             <li>
+              <a href="#statements">Statements</a>
+            </li>
+            <li>
               <a href="#looping">Iteration and Looping</a>
             </li>
-             <li>
-              <a href="#statements">Statements</a>
+            <li>
+              <a href="#macros">Macros</a>
+            </li>
+            <li>
+              <a href="#monads">Monads</a>
+            </li>
+            <li>
+              <a href="#templates">Templates</a>
             </li>
              <li>
               <a href="#sequence">Callback Sequence</a>
@@ -112,8 +115,154 @@
 
 
         <div class='span8'>
-        
-<h2>Macros</h2>
+
+
+<a name="operators"></a>
+<h2 style="padding-top:40px">Operators</h2>
+
+<pre>undefined?, null?, true?, false?, zero?, boolean?, number?,
+string?, object?, array?, function?,
+=, !=, !, &gt;, &lt;, &lt;=, &gt;=, +, -, *, /, %, &amp;&amp;, ||.
+</pre>
+<p>Note: <code>=</code> and <code>!=</code> work like <code>===</code> and <code>!==</code> in Javascript.</p>
+
+
+<a name="statements"></a>
+<h2 style="padding-top:40px">LispyScript Statements</h2>
+
+<h4>(str (string expression) ...)</h4>
+<p>Adds up all the strings.</p>
+<pre>(var title &quot;My Home Page&quot;)
+(console.log
+  (str &quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;&quot; title &quot;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class=\&quot;test\&quot;&gt;
+Hello World
+&lt;/body&gt;
+&lt;/html&gt;&quot;))
+</pre>
+<p>In LispyScript double quoted strings are multiline strings. As you can see above they span multiple lines.
+If you need a double quote inside the string, escape it with \".</p>
+
+<h4>(array elem1 elem2 ....)</h4>
+<p>Create a Javascript Array.</p>
+<pre>(array 1 2 3 4)
+</pre>
+<p>You can also create an array using the Javascript literal notation like [1, 2, 3, 4] however there is a difference.
+The literal notation is evaluated in the Javascript context, and will work in most cases except when you want some
+LispyScript code evaluated, like when one of the elements is a LispyScript anonymous function. And unlike Javascript
+"new Array" a single integer passed will still create a proper array with the int as the first element.</p>
+
+<h4>(object key1 val1 key2 val2 ....)</h4>
+<p>Create a Javascript Object.</p>
+<pre>(object "a" 1 "b" 2 "c" 3) => {a: 1, b:2, c:3}
+</pre>
+
+<h4>(new Classname arg1 arg2 ....)</h4>
+<p>Instantiate a new Javascript Object.</p>
+<pre>(new Date)
+(new Date "October 13, 1975 11:13:00")
+</pre>
+
+<h4>(if (condition) (if true expression) (if false expression))</h4>
+<p>If takes a conditional expression and evaluates the true expression if the condition is true, or the false
+expression otherwise.</p>
+
+<h4>(cond (condition1) (expression1) (condition2) (expression2) ... (optional default expression))</h4>
+<p>The cond statement (switch in Javascript) takes condition-expression pairs and an optional default expression.
+The first true condition will have its correponding expression evaluated. The optional default
+expression is evaluated if all the conditions are false. If all conditions are false and there is no
+default expression undefined is returned.</p>
+<pre>(cond
+  (number? x) (console.log "numbers are ok")
+  (string? x) (console.log "strings are ok")
+  (boolean? x) (console.log "booleans are ok")
+  (console.log "This type is NOT ok"))
+</pre>
+
+<h4>(when (condition) (expression1) (expression2) ...)</h4>
+<p>The when statement evaluates a set of expressions passed as it arguments when the condition is true.</p>
+
+<h4>(unless (condition) (expression1) (expression2) ...)</h4>
+<p>The unless statement evaluates a set of expressions passed as it arguments when the condition is false.</p>
+
+<h4>(do (expression1) (expression2) ...)</h4>
+<p>The do statement evaluates a set of expressions passed as it arguments.</p>
+
+<h4>(function (arguments expression) (expression1) (expression2) ... )</h4>
+<p>Creates an anonymous function.</p>
+
+<h4>(try (expression1) (expression2) ... (catch function))</h4>
+<p>Try takes a set of expressions and evaluates them. The last expression must be a function, that
+will be called in case an exception is thrown. The function is called with the error object.</p>
+<pre>(var fs (require 'fs'))
+(var outfile &quot;text.txt&quot;)
+(try
+  (fs.writeFileSync outfile &quot;Hello World&quot;)
+  (function (err)
+    (console.log (+ &quot;Cannot write file &quot; outfile)
+    (process.exit 1)))
+</pre>
+<h4>(include "string filename")</h4>
+<p>Includes a file to be compiled with this compilation unit. It will also search the 'includes' folder for Lispyscript modules like 'html.ls'.</p>
+<h4>(throw (expression))</h4>
+<p>Will throw an error. (expression) can be string or object or an expression</p>
+<h4>Comments</h4>
+<p>Comments in LispyScript start with a <code>;</code> and span the rest of the line.</p>
+
+
+<a name="looping"></a>
+<h2 style="padding-top:40px">Iteration & Looping</h2>
+
+<h4>(loop (arguments) (initial values) (expression1) (expression2) ...)</h4>
+<p>The loop - recur construct is a tail call optimised looping expression. It creates a binding for
+a set of arguments with a set of initial values. A recusion point is set by using a recur expression 
+which passes control back to the top of the loop with a new set of bindings for the arguments.</p>
+<pre>
+(loop (result x) ([] 5)
+  (if (= 0 x)
+    result
+    (do
+      (result.push x)
+      (recur result --x))))
+</pre>
+<p>The example above will return a countdown array starting from 5 "[5, 4, 3, 2, 1]"</p>
+<p>Read more about loop recur and tail call optimization <a href="http://lispyscript.blogspot.in/2012/09/loop-recur-and-tail-call-optimization.html">here.</a></p>
+
+<h4>(each array (iterator) [(context)])</h4>
+<p>each takes an array, an iterator function and an optional context. The iterator is called for each
+element of the array with element value, index, array. If context is provided then "this" inside the 
+iterator function will be the context object.</p>
+<pre>(each [1, 2, 3]
+  (function (elem index list)
+    (console.log elem)))
+</pre>
+
+<h4>(eachKey object (iterator) [context])</h4>
+<p>eachKey iterates over a map (object) and calls the iterator with value, key, object respectively.</p>
+
+<h4>(reduce array (iterator) [initial])</h4>
+<p>reduce takes an array, an iterator function and an optional initial value. The iterator is called
+with the following paramaters, previous value returned by the last call to iterator, current value of array element, array index, and array. First time around the initial value is used for previous value. If no initial value is given, the previous value is set to the first element of the array and the iteration starts from the second element. The last value returned by the iterator is returned by reduce.</p>
+<pre>(reduce [1,2,3,4]
+  (function (accum val i list)
+    (+ accum val))))
+</pre>
+<p>The above call to reduce will return 10.</p>
+
+<h4>(map array (iterator) [(context)])</h4>
+<p>map takes an array, an iterator function and an optional context. The iterator is called for each
+element of the array with element value, index, array. The returned value from the iterator for each call
+is pushed into a new array. map returns the new array. If context is provided then "this" inside the 
+iterator function will be the context object.</p>
+
+
+<a name="macros"></a>        
+<h2 style="padding-top:40px">Macros</h2>
+
 <h4>(macro name (arguments expression) (template expression))</h4>
 <p>LispyScript is not a dialect of Lisp. There is no list processing in LispyScript . LispyScript
 is Javascript using a Lispy syntax (a tree syntax). This is so that we can manipulate the syntax tree
@@ -150,8 +299,106 @@ For that we use '~@vals'.</p>
 by adding this macro to your code. Thats the power of macros. You can
 extend the language itself or create your own domain specific language.</p>
 
+
+<a name="monads"></a>        
+<h2 style="padding-top:40px">Monads</h2>
+<p>Monads allow you to process data in steps. There are different types of monads, and each type provides you with
+additional processing rules for each step. Fortunately you don't have to understand the workings of monads to use them.
+LispyScript comes with four builtin monad types. The "identity monad", "maybe monad", "array monad" and 
+"state monad". You can also write your own monads in LispyScript.</p>
+<pre>;; using identity monad
+(doMonad identityMonad
+  (a 1 
+   b (* a 2))
+  (+ a b))
+</pre>
+<p>The expression above will return number 3. In general the domonad expression is written like below.</p>
+<h4>(domonad name (varname1 expression1 varname2 expression2 ...) (result expression))</h4>
+<p>Note that the variable <code>a</code> in step 1 is visible in step 2, and both <code>a</code> and
+<code>b</code> are visible in the result expression.</p>
+<pre>;; using maybe monad
+(doMonad maybeMonad
+  (a (task1) 
+   b (task2))
+  (doSomething))
+</pre>
+<p>The maybe monad is called so because may be it will do something. The way it works is that if any of the steps
+returns <code>null</code> it will return <code>null</code> and not carry out the rest os the steps.</p>
+<pre>;; using array monad
+(doMonad arrayMonad
+  (a [1,2,3] 
+   b [3,4,5])
+  (+ a b))
+
+;; ==> [ 4, 5, 6, 5, 6, 7, 6, 7, 8 ]
+
+;; we only want results that are &lt;= 6
+(doMonad arrayMonad
+  (a [1,2,3]
+   b [3,4,5])
+  (when (&lt;= (+ a b) 6)
+    (+ a b)))
+
+;; ==> [ 4, 5, 6, 5, 6, 6 ]
+
+(doMonad arrayMonad 
+  (letters ["a", "b", "c"]
+   numbers [3, 4, 5])
+  [letters, numbers])
+
+;; ==> [['a',3],['a',4],['a',5],['b',3],['b',4],['b',5],['c',3],['c',4],['c',5]]
+</pre>
+<p>The array monad is a array comprehension. The bindings for <code>a</code> and <code>b</code> are made
+for every element of the corresponding arrays. In the second example we applied a <code>when</code> condition
+to the result expression to keep out results greater than six. This <code>when</code> condition can only
+be used with the array monad and maybe monad. Or to be more specific, monads that define <code>mZero</code></p>
+
+<p>The state monad allows you to pass the current state through a set of steps. The state could be anything,
+an integer, string, array, object etc. In the example below we will maintain state of an immutable stack
+through a set of steps.</p>
+<pre>;; First we write two functions push and pop,
+;; which will be the operations we carry out.
+
+;; push is a monadic function that accepts an element and returns a function.
+;; The returned function accepts the current state (stack array),
+;; creates a new state by creating a new array with the element
+;; and concats the previous state to it. (we want an immutable state)
+;; and returns a monadic value which is and array of two elements. The result
+;; of the current operation (undefined) in this case and the new state.
+(var push
+  (function (element)
+    (function (state)
+      (var newstate [element])
+      (array undefined (newstate.concat state)))))
+
+;; In the same way above we write a pop function that will remove one
+;; element from the stack and creates a new stack
+;; and returns the popped value and the new stack.
+(var pop
+  (function ()
+    (function (state)
+      (var value (get 0 state))
+      (var newstate (state.slice 1))
+      (array value newstate))))
+
+;; In the case of state monad domonad returns a function which we must call
+;; with the initial state. We call the returned function stackOperation.
+(var stackOperations 
+  (doMonad stateMonad 
+    (a (push 5) 
+     b (push 10)
+     c (push 20)
+     d (pop))
+    d))
+
+(stackOperations [])
+
+;; ==> [ 20, [ 10, 5 ] ]
+</pre>
+
 <a name="templates"></a>
 <h2 style="padding-top:40px">Templates</h2>
+
 <h4>(template name (argument expression) (string expressions) ... )</h4>
 <p>template takes a name and a list of arguments to be passed to the template as the second argument. The rest of the arguments are string expressions that make up the template. Template returns a compiled template function with the given name which you must call with the arguments to expand the template.</p>
 <h4>(template-repeat (array expression) (string expressions) ... )</h4>
@@ -217,143 +464,18 @@ And below you can see the beautified html output.
 
 &lt;/html&gt;
 </code></pre>
-<a name="operators"></a>
-<h2 style="padding-top:40px">Operators</h2>
-<pre>undefined?, null?, true?, false?, zero?, boolean?, number?, string?, object?, array?, function?,
-=, !=, !, &gt;, &lt;, &lt;=, &gt;=, +, -, *, /, %, &amp;&amp;, ||.
-</pre>
-<a name="statements"></a>
-<p>Note: <code>=</code> and <code>!=</code> work like <code>===</code> and <code>!==</code> in Javascript.</p>
 
-<a name="looping"></a>
-
-<h2 style="padding-top:40px">Iteration & Looping</h2>
-
-<h4>(loop (arguments) (initial values) (expression1) (expression2) ...)</h4>
-<p>The loop - recur construct is a tail call optimised looping expression. It creates a binding for
-a set of arguments with a set of initial values. A recusion point is set by using a recur expression 
-which passes control back to the top of the loop with a new set of bindings for the arguments.</p>
-<pre>
-(loop (result x) ([] 5)
-  (if (= 0 x)
-    result
-    (do
-      (result.push x)
-      (recur result --x))))
-</pre>
-<p>The example above will return a countdown array starting from 5 "[5, 4, 3, 2, 1]"</p>
-<p>Read more about loop recur and tail call optimization <a href="http://lispyscript.blogspot.in/2012/09/loop-recur-and-tail-call-optimization.html">here.</a></p>
-
-<h4>(each array (iterator) [(context)])</h4>
-<p>each takes an array, an iterator function and an optional context. The iterator is called for each
-element of the array with element value, index, array. If context is provided then "this" inside the 
-iterator function will be the context object.</p>
-<pre>(each [1, 2, 3]
-  (function (elem index list)
-    (console.log elem)))
-</pre>
-
-<h4>(eachKey object (iterator) [context])</h4>
-<p>eachKey iterates over a map (object) and calls the iterator with value, key, object respectively.</p>
-
-<h4>(reduce array (iterator) [initial])</h4>
-<p>reduce takes an array, an iterator function and an optional initial value. The iterator is called
-with the following paramaters, previous value returned by the last call to iterator, current value of array element, array index, and array. First time around the initial value is used for previous value. If no initial value is given, the previous value is set to the first element of the array and the iteration starts from the second element. The last value returned by the iterator is returned by reduce.</p>
-<pre>(reduce [1,2,3,4]
-  (function (accum val i list)
-    (+ accum val))))
-</pre>
-<p>The above call to reduce will return 10.</p>
-
-<h4>(map array (iterator) [(context)])</h4>
-<p>map takes an array, an iterator function and an optional context. The iterator is called for each
-element of the array with element value, index, array. The returned value from the iterator for each call
-is pushed into a new array. map returns the new array. If context is provided then "this" inside the 
-iterator function will be the context object.</p>
-
-<h2 style="padding-top:40px">LispyScript Statements</h2>
-
-<h4>(str (string expression) ...)</h4>
-<p>Adds up all the strings.</p>
-<pre>(var title &quot;My Home Page&quot;)
-(console.log
-  (str &quot;&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-  &lt;title&gt;&quot; title &quot;&lt;/title&gt;
-&lt;/head&gt;
-&lt;body class=\&quot;test\&quot;&gt;
-Hello World
-&lt;/body&gt;
-&lt;/html&gt;&quot;))
-</pre>
-<p>In LispyScript double quoted strings are multiline strings. As you can see above they span multiple lines.
-If you need a double quote inside the string, escape it with \".</p>
-
-<h4>(array elem1 elem2 ....)</h4>
-<p>Create a Javascript Array.</p>
-<pre>(array 1 2 3 4)
-</pre>
-<p>You can also create an array using the Javascript literal notation like [1, 2, 3, 4] however there is a difference.
-The literal notation is evaluated in the Javascript context, and will work in most cases except when you want some
-LispyScript code evaluated, like when one of the elements is a LispyScript anonymous function. And unlike Javascript
-"new Array" a single integer passed will still create a proper array with the int as the first element.</p>
-
-<h4>(object key1 val1 key2 val2 ....)</h4>
-<p>Create a Javascript Object.</p>
-<pre>(object "a" 1 "b" 2 "c" 3) => {a: 1, b:2, c:3}
-</pre>
-
-<h4>(new Classname arg1 arg2 ....)</h4>
-<p>Instantiate a new Javascript Object.</p>
-<pre>(new Date)
-(new Date "October 13, 1975 11:13:00")
-</pre>
-
-<h4>(if (condition) (if true expression) (if false expression))</h4>
-<p>If takes a conditional expression and evaluates the true expression if the condition is true, or the false
-expression otherwise.</p>
-
-<h4>(do (expression1) (expression2) ...)</h4>
-<p>The do statement evaluates a set of expressions passed as it arguments.</p>
-
-<h4>(when (condition) (expression1) (expression2) ...)</h4>
-<p>The when statement evaluates a set of expressions passed as it arguments when the condition is true.</p>
-
-<h4>(unless (condition) (expression1) (expression2) ...)</h4>
-<p>The unless statement evaluates a set of expressions passed as it arguments when the condition is false.</p>
-
-<h4>(function (arguments expression) (expression1) (expression2) ... )</h4>
-<p>Creates an anonymous function.</p>
-
-<h4>(try (expression1) (expression2) ... (catch function))</h4>
-<p>Try takes a set of expressions and evaluates them. The last expression must be a function, that
-will be called in case an exception is thrown. The function is called with the error object.</p>
-<pre>(var fs (require 'fs'))
-(var outfile &quot;text.txt&quot;)
-(try
-  (fs.writeFileSync outfile &quot;Hello World&quot;)
-  (function (err)
-    (console.log (+ &quot;Cannot write file &quot; outfile)
-    (process.exit 1)))
-</pre>
-<h4>(include "string filename")</h4>
-<p>Includes a file to be compiled with this compilation unit. It will also search the 'includes' folder for Lispyscript modules like 'html.ls'.</p>
-<h4>(throw (expression))</h4>
-<p>Will throw an error. (expression) can be string or object or an expression</p>
-<h4>Comments</h4>
 <a name="sequence"></a>
-<p>Comments in LispyScript start with a <code>;</code> and span the rest of the line.</p>
-
 <h2 style="padding-top:40px">Callback Sequence</h2>
 <p>LispyScript allows you to avoid writing nested callbacks, by a callback sequence feature. You write your callbacks
 in a series (sequence). All the functions in the series are exposed to a functions called "next". Calling "next"
 returns the next callback in the sequence. So just pass the return value of next, when you call a callback.
-<a name="testing"></a>
 You can see an example with some notes on usage <a href="https://gist.github.com/3715526">here</a>.
 </p>
 
+<a name="testing"></a>
 <h2 style="padding-top:40px">Testing</h2>
+
 <p>LispyScript comes with some built in testing features to let you test your code while developing. However if
 you find that the features offered in the built in tests are not enough, you can use any of the javascript
 test frameworks available.</p>
@@ -369,6 +491,7 @@ which will be shown at the top of your test results. It returns the test results
          
 <a name="browser"></a>
 <h2 style="padding-top:40px">Browser Compatibility</h2>
+
 <p>The compiled Javascript code is compatible with all modern browsers.</p>
 <p>However since Lispyscript allows you to call Javascript functions directly from LispyScript,
 you need to guard against calling non standard native functions. eg. If you call the Javascript "forEach" from
@@ -380,6 +503,7 @@ always be faster.</p>
          
 <a name="guidelines"></a>
 <h2 style="padding-top:40px">Programming Guidelines</h2>
+
 <ol>
   <li>You MUST use the "var" keyword when you create a variable. Otherwise this could lead to nasty surprises. This is
     also true of Javascript.</li>
