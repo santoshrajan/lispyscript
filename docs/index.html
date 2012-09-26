@@ -307,6 +307,7 @@ additional processing rules for each step. Fortunately you don't have to underst
 LispyScript comes with four builtin monad types. The "identity monad", "maybe monad", "array monad" and 
 "state monad". You can also write your own monads in LispyScript.</p>
 <pre>;; using identity monad
+
 (doMonad identityMonad
   (a 1 
    b (* a 2))
@@ -317,6 +318,7 @@ LispyScript comes with four builtin monad types. The "identity monad", "maybe mo
 <p>Note that the variable <code>a</code> in step 1 is visible in step 2, and both <code>a</code> and
 <code>b</code> are visible in the result expression.</p>
 <pre>;; using maybe monad
+
 (doMonad maybeMonad
   (a (task1) 
    b (task2))
@@ -324,7 +326,9 @@ LispyScript comes with four builtin monad types. The "identity monad", "maybe mo
 </pre>
 <p>The maybe monad is called so because may be it will do something. The way it works is that if any of the steps
 returns <code>null</code> it will return <code>null</code> and not carry out the rest os the steps.</p>
+<p>The array monad is a array comprehension.</p>
 <pre>;; using array monad
+
 (doMonad arrayMonad
   (a [1,2,3] 
    b [3,4,5])
@@ -332,7 +336,8 @@ returns <code>null</code> it will return <code>null</code> and not carry out the
 
 ;; ==> [ 4, 5, 6, 5, 6, 7, 6, 7, 8 ]
 
-;; we only want results that are &lt;= 6
+;; we only want results that are &lt;= 6 below
+
 (doMonad arrayMonad
   (a [1,2,3]
    b [3,4,5])
@@ -348,7 +353,7 @@ returns <code>null</code> it will return <code>null</code> and not carry out the
 
 ;; ==> [['a',3],['a',4],['a',5],['b',3],['b',4],['b',5],['c',3],['c',4],['c',5]]
 </pre>
-<p>The array monad is a array comprehension. The bindings for <code>a</code> and <code>b</code> are made
+<p>The bindings for <code>a</code> and <code>b</code> are made
 for every element of the corresponding arrays. In the second example we applied a <code>when</code> condition
 to the result expression to keep out results greater than six. This <code>when</code> condition can only
 be used with the array monad and maybe monad. Or to be more specific, monads that define <code>mZero</code></p>
@@ -365,6 +370,7 @@ through a set of steps.</p>
 ;; and concats the previous state to it. (we want an immutable state)
 ;; and returns a monadic value which is and array of two elements. The result
 ;; of the current operation (undefined) in this case and the new state.
+
 (var push
   (function (element)
     (function (state)
@@ -374,6 +380,7 @@ through a set of steps.</p>
 ;; In the same way above we write a pop function that will remove one
 ;; element from the stack and creates a new stack
 ;; and returns the popped value and the new stack.
+
 (var pop
   (function ()
     (function (state)
@@ -383,6 +390,7 @@ through a set of steps.</p>
 
 ;; In the case of state monad domonad returns a function which we must call
 ;; with the initial state. We call the returned function stackOperation.
+
 (var stackOperations 
   (doMonad stateMonad 
     (a (push 5) 
@@ -395,6 +403,19 @@ through a set of steps.</p>
 
 ;; ==> [ 20, [ 10, 5 ] ]
 </pre>
+<h4>Writing your own monad</h4>
+<p>To write monads use the <code>monad</code> expression. It takes two arguments. The name for the monad, and an
+object of key value pairs. The keys <code>mResult</code> and <code>mBind</code> are obligatory. The values must be the
+corresponding monadic result function and the monadic bind function. Optionally you can have the
+<code>mZero</code> and <code>mPlus</code> keys with their corresponding values. The example below is the definition
+of the identity monad.</p>
+<pre>(monad identityMonad
+  (object
+    "mBind" (function (mv mf) (mf mv))
+    "mResult" (function (v) v)))
+</pre>
+<p>LispyScript also supports the <code>withMonad</code> expression.</p>
+<h4>(withMonad name (expression1) (expression2) ... )</h4>
 
 <a name="templates"></a>
 <h2 style="padding-top:40px">Templates</h2>
