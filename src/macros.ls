@@ -242,5 +242,10 @@
           (mResult ___arg))))
     (m-bind ~@bindings (____mResult ~expr))))
 
+(macro monad (name obj)
+  (var ~name
+    (function ()
+      ~obj)))
+
 
 
