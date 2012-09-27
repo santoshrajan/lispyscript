@@ -210,14 +210,27 @@
 
 (macro arrayMonad ()
   (object
-    "mBind" (function (mv mf) (reduce (map mv mf) (function (accum val) (accum.concat val)) []))
+    "mBind" (function (mv mf)
+              (reduce
+                (map mv mf)
+                (function (accum val) (accum.concat val))
+                []))
     "mResult" (function (v) [v])
     "mZero" []
-    "mPlus" (function () (reduce (Array.prototype.slice.call arguments) (function (accum val) (accum.concat val)) []))))
+    "mPlus" (function ()
+              (reduce
+                (Array.prototype.slice.call arguments)
+                (function (accum val) (accum.concat val))
+                []))))
 
 (macro stateMonad ()
   (object
-    "mBind" (function (mv f) (function (s) (var l (mv s)) (var v l[0]) (var ss l[1]) ((f v) ss)))
+    "mBind" (function (mv f)
+              (function (s)
+                (var l (mv s))
+                (var v (get 0 l))
+                (var ss (get 1 l))
+                ((f v) ss)))
     "mResult" (function (v) (function (s) [v, s]))))
 
 (macro m-bind (first second rest...)
