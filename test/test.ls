@@ -122,6 +122,24 @@
 (assert
   (= null
     (doMonad maybeMonad (a null b (* a 2)) (+ a b))) "maybe Monad null Test")
+(assert
+  (= 54
+    (reduce
+      (doMonad arrayMonad (a [1,2,3] b [3,4,5]) (+ a b))
+      (function (accum val) (+ accum val))
+      0)) "arrayMonad test")
+(assert
+  (= 32
+    (reduce
+      (doMonad arrayMonad (a [1,2,3] b [3,4,5]) (when (<= (+ a b) 6) (+ a b)))
+      (function (accum val) (+ accum val))
+      0)) "arrayMonad when test")
+(assert
+  (= 6
+    (reduce
+      (doMonad arrayMonad (a [1,2,0,null,3]) (when a a))
+      (function (accum val) (+ accum val))
+      0)) "arrayMonad when null values test")
 
 )
 

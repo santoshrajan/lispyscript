@@ -50,8 +50,8 @@
 (macro unless (cond rest...)
   (when (! ~cond) (do ~rest...)))
 
-(macro cond (first second rest...)
-  (if ~first ~second (cond ~rest...)))
+(macro cond (rest...)
+  (if (args-shift rest...) (args-shift rest...) (args-if rest... (cond ~rest...))))
 
 (macro array (rest...)
   ((function ()
@@ -63,6 +63,11 @@
     (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
     _r) ~rest...))
 
+;; method chaining macro
+(macro -> (func form rest...)
+  (args-if rest... 
+    (-> (((args-shift form) ~func) ~@form) ~rest...)
+    (((args-shift form) ~func) ~@form)))
 
 ;;;;;;;;;;;;;;;;;;;;;; Iteration and Looping ;;;;;;;;;;;;;;;;;;;;
 
@@ -233,10 +238,10 @@
                 ((f v) ss)))
     "mResult" (function (v) (function (s) [v, s]))))
 
-(macro m-bind (first second rest...)
-  (mBind ~second
-    (function (~first)
-      (m-bind ~rest...))))
+(macro m-bind (bindings expr)
+  (mBind (args-second bindings)
+    (function ((args-shift bindings))
+      (args-if bindings (m-bind ~bindings ~expr) ((function () ~expr))))))
 
 (macro withMonad (monad rest...)
   ((function (___monad)
@@ -253,7 +258,7 @@
         (if (&& (undefined? ___arg) (! (undefined? mZero)))
           mZero
           (mResult ___arg))))
-    (m-bind ~@bindings (____mResult ~expr))))
+    (m-bind ~bindings (____mResult ~expr))))
 
 (macro monad (name obj)
   (var ~name

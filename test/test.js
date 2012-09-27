@@ -278,7 +278,9 @@ var lispyscript = function() {
             };
             return mBind(1,function(a) {
                 return mBind((a * 2),function(b) {
-                    return ____mResult((a + b));
+                    return (function() {
+                        return ____mResult((a + b));
+                    })();
                 });
             });
         })((function() {
@@ -303,7 +305,9 @@ var lispyscript = function() {
             };
             return mBind(1,function(a) {
                 return mBind((a * 2),function(b) {
-                    return ____mResult((a + b));
+                    return (function() {
+                        return ____mResult((a + b));
+                    })();
                 });
             });
         })((function() {
@@ -331,7 +335,9 @@ var lispyscript = function() {
             };
             return mBind(null,function(a) {
                 return mBind((a * 2),function(b) {
-                    return ____mResult((a + b));
+                    return (function() {
+                        return ____mResult((a + b));
+                    })();
                 });
             });
         })((function() {
@@ -347,7 +353,244 @@ var lispyscript = function() {
             return v;
         },"mZero",null)))) ?
         ("Passed - " + "maybe Monad null Test") :
-        ("Failed - " + "maybe Monad null Test")));
+        ("Failed - " + "maybe Monad null Test")),((true === (54 === (function(arr,f,init) {
+            var noInit = (arguments.length < 3);
+            (function(o,f,s) {
+                if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                return undefined;
+            })(arr,function(val,i,list) {
+                return (((i === 0) && noInit) ?
+                    init = val :
+                    init = f(init,val,i,list));
+            });
+            return init;
+        })((function(___monad) {
+            var mBind = ___monad.mBind;
+            var mResult = ___monad.mResult;
+            var mZero = ___monad.mZero;
+            var mPlus = ___monad.mPlus;
+            var ____mResult = function(___arg) {
+                return (((typeof(___arg) === "undefined") && (!(typeof(mZero) === "undefined"))) ?
+                    mZero :
+                    mResult(___arg));
+            };
+            return mBind([1,2,3],function(a) {
+                return mBind([3,4,5],function(b) {
+                    return (function() {
+                        return ____mResult((a + b));
+                    })();
+                });
+            });
+        })((function() {
+            var _r = {};
+            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
+            return _r;
+        })("mBind",function(mv,mf) {
+            return (function(arr,f,init) {
+                var noInit = (arguments.length < 3);
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return (((i === 0) && noInit) ?
+                        init = val :
+                        init = f(init,val,i,list));
+                });
+                return init;
+            })((function(arr,f,scope) {
+                var _r = [];
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return _r.push(f.call(scope,val,i,list));
+                });
+                return _r;
+            })(mv,mf),function(accum,val) {
+                return accum.concat(val);
+            },[]);
+        },"mResult",function(v) {
+            return [v];
+        },"mZero",[],"mPlus",function() {
+            return (function(arr,f,init) {
+                var noInit = (arguments.length < 3);
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return (((i === 0) && noInit) ?
+                        init = val :
+                        init = f(init,val,i,list));
+                });
+                return init;
+            })(Array.prototype.slice.call(arguments),function(accum,val) {
+                return accum.concat(val);
+            },[]);
+        })),function(accum,val) {
+            return (accum + val);
+        },0))) ?
+        ("Passed - " + "arrayMonad test") :
+        ("Failed - " + "arrayMonad test")),((true === (32 === (function(arr,f,init) {
+            var noInit = (arguments.length < 3);
+            (function(o,f,s) {
+                if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                return undefined;
+            })(arr,function(val,i,list) {
+                return (((i === 0) && noInit) ?
+                    init = val :
+                    init = f(init,val,i,list));
+            });
+            return init;
+        })((function(___monad) {
+            var mBind = ___monad.mBind;
+            var mResult = ___monad.mResult;
+            var mZero = ___monad.mZero;
+            var mPlus = ___monad.mPlus;
+            var ____mResult = function(___arg) {
+                return (((typeof(___arg) === "undefined") && (!(typeof(mZero) === "undefined"))) ?
+                    mZero :
+                    mResult(___arg));
+            };
+            return mBind([1,2,3],function(a) {
+                return mBind([3,4,5],function(b) {
+                    return (function() {
+                        return ____mResult((((a + b) <= 6) ?
+                            (function() {
+                                return (a + b);
+                            })() :
+                            undefined));
+                    })();
+                });
+            });
+        })((function() {
+            var _r = {};
+            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
+            return _r;
+        })("mBind",function(mv,mf) {
+            return (function(arr,f,init) {
+                var noInit = (arguments.length < 3);
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return (((i === 0) && noInit) ?
+                        init = val :
+                        init = f(init,val,i,list));
+                });
+                return init;
+            })((function(arr,f,scope) {
+                var _r = [];
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return _r.push(f.call(scope,val,i,list));
+                });
+                return _r;
+            })(mv,mf),function(accum,val) {
+                return accum.concat(val);
+            },[]);
+        },"mResult",function(v) {
+            return [v];
+        },"mZero",[],"mPlus",function() {
+            return (function(arr,f,init) {
+                var noInit = (arguments.length < 3);
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return (((i === 0) && noInit) ?
+                        init = val :
+                        init = f(init,val,i,list));
+                });
+                return init;
+            })(Array.prototype.slice.call(arguments),function(accum,val) {
+                return accum.concat(val);
+            },[]);
+        })),function(accum,val) {
+            return (accum + val);
+        },0))) ?
+        ("Passed - " + "arrayMonad when test") :
+        ("Failed - " + "arrayMonad when test")),((true === (6 === (function(arr,f,init) {
+            var noInit = (arguments.length < 3);
+            (function(o,f,s) {
+                if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                return undefined;
+            })(arr,function(val,i,list) {
+                return (((i === 0) && noInit) ?
+                    init = val :
+                    init = f(init,val,i,list));
+            });
+            return init;
+        })((function(___monad) {
+            var mBind = ___monad.mBind;
+            var mResult = ___monad.mResult;
+            var mZero = ___monad.mZero;
+            var mPlus = ___monad.mPlus;
+            var ____mResult = function(___arg) {
+                return (((typeof(___arg) === "undefined") && (!(typeof(mZero) === "undefined"))) ?
+                    mZero :
+                    mResult(___arg));
+            };
+            return mBind([1,2,0,null,3],function(a) {
+                return (function() {
+                    return ____mResult((a ?
+                        (function() {
+                            return a;
+                        })() :
+                        undefined));
+                })();
+            });
+        })((function() {
+            var _r = {};
+            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
+            return _r;
+        })("mBind",function(mv,mf) {
+            return (function(arr,f,init) {
+                var noInit = (arguments.length < 3);
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return (((i === 0) && noInit) ?
+                        init = val :
+                        init = f(init,val,i,list));
+                });
+                return init;
+            })((function(arr,f,scope) {
+                var _r = [];
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return _r.push(f.call(scope,val,i,list));
+                });
+                return _r;
+            })(mv,mf),function(accum,val) {
+                return accum.concat(val);
+            },[]);
+        },"mResult",function(v) {
+            return [v];
+        },"mZero",[],"mPlus",function() {
+            return (function(arr,f,init) {
+                var noInit = (arguments.length < 3);
+                (function(o,f,s) {
+                    if(o.forEach){o.forEach(f,s);}else{for(var i=0,l=o.length;i<l;++i)f.call(s||o,o[i],i,o);}
+                    return undefined;
+                })(arr,function(val,i,list) {
+                    return (((i === 0) && noInit) ?
+                        init = val :
+                        init = f(init,val,i,list));
+                });
+                return init;
+            })(Array.prototype.slice.call(arguments),function(accum,val) {
+                return accum.concat(val);
+            },[]);
+        })),function(accum,val) {
+            return (accum + val);
+        },0))) ?
+        ("Passed - " + "arrayMonad when null values test") :
+        ("Failed - " + "arrayMonad when null values test")));
 };
 var browserTest = function() {
     var el = document.getElementById("testresult");
