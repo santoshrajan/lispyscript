@@ -130,6 +130,22 @@ string?, object?, array?, function?,
 <a name="statements"></a>
 <h2 style="padding-top:40px">LispyScript Statements</h2>
 
+<h4>(-> (function expression) (.key1 args1 ...) (.key2 args2 ...) ...)</h4>
+<p>"->" is the method chaining macro.</p>
+<p>Consider the JavaScript below.</p>
+<pre>$("#xyz").required().alphanum().min(3).max(30).with("email");</pre>
+<p>The same JavaScript in LispyScript using the method chaining macro.</p>
+<pre>(-> ($ "#xyz") (.required) (.alphanum) (.min 3) (.max 30) (.with "email"))</pre>
+<p>The node server example using the method chaining macro.</p>
+<pre>(->
+  (require "http")
+  (.createServer
+    (function (request response)
+      (response.writeHead 200 {'Content-Type': 'text/plain'})
+      (response.end "Hello World\n")))
+  (.listen 3000 "127.0.0.1"))
+</pre>
+
 <h4>(str (string expression) ...)</h4>
 <p>Adds up all the strings.</p>
 <pre>(var title &quot;My Home Page&quot;)
@@ -173,14 +189,12 @@ expression otherwise.</p>
 
 <h4>(cond (condition1) (expression1) (condition2) (expression2) ... (optional default expression))</h4>
 <p>The cond statement (switch in Javascript) takes condition-expression pairs and an optional default expression.
-The first true condition will have its correponding expression evaluated. The optional default
-expression is evaluated if all the conditions are false. If all conditions are false and there is no
-default expression undefined is returned.</p>
+The default expression is nothing but the last condition set to <code>true</code>.</p>
 <pre>(cond
   (number? x) (console.log "numbers are ok")
   (string? x) (console.log "strings are ok")
   (boolean? x) (console.log "booleans are ok")
-  (console.log "This type is NOT ok"))
+  true (console.log "This type is NOT ok"))
 </pre>
 
 <h4>(when (condition) (expression1) (expression2) ...)</h4>
