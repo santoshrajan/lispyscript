@@ -28,6 +28,13 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.7, 28 Sep 2012
+
+Added method chaining  
+Changed cond statement  
+Added homoiconic expressions for recursive macros  
+Improved macro error checking    
+
 ### Version 0.2.6, 26 Sep 2012
 
 Added Monads  
