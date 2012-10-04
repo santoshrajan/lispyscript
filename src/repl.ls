@@ -13,7 +13,7 @@
       (function (line)
         (try
           (var l (ls._compile line))
-          (console.log (eval l))
+          (console.log (this.eval l))
           (function (err)
             (console.log err)))
         (rl.setPrompt prefix prefix.length)

@@ -51,7 +51,7 @@
   (when (! ~cond) (do ~rest...)))
 
 (macro cond (rest...)
-  (if (args-shift rest...) (args-shift rest...) (args-if rest... (cond ~rest...))))
+  (if (#args-shift rest...) (#args-shift rest...) (#args-if rest... (cond ~rest...))))
 
 (macro array (rest...)
   ((function ()
@@ -65,9 +65,9 @@
 
 ;; method chaining macro
 (macro -> (func form rest...)
-  (args-if rest... 
-    (-> (((args-shift form) ~func) ~@form) ~rest...)
-    (((args-shift form) ~func) ~@form)))
+  (#args-if rest... 
+    (-> (((#args-shift form) ~func) ~@form) ~rest...)
+    (((#args-shift form) ~func) ~@form)))
 
 ;;;;;;;;;;;;;;;;;;;;;; Iteration and Looping ;;;;;;;;;;;;;;;;;;;;
 
@@ -239,9 +239,9 @@
     "mResult" (function (v) (function (s) [v, s]))))
 
 (macro m-bind (bindings expr)
-  (mBind (args-second bindings)
-    (function ((args-shift bindings))
-      (args-if bindings (m-bind ~bindings ~expr) ((function () ~expr))))))
+  (mBind (#args-second bindings)
+    (function ((#args-shift bindings))
+      (#args-if bindings (m-bind ~bindings ~expr) ((function () ~expr))))))
 
 (macro withMonad (monad rest...)
   ((function (___monad)

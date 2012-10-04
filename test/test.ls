@@ -143,7 +143,6 @@
 
 )
 
-
 ;; Function for running on browser. This function is for
 ;; the test.html file in the same folder.
 (var browserTest
@@ -159,4 +158,3 @@
 (if (undefined? window)
   (console.log (testRunner lispyscript "LispyScript Testing"))
   (set window.onload browserTest))
-
