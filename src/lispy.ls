@@ -17,10 +17,10 @@ or when an output file cannot be written (permission denied).")
     (if error
       (do
         (if error.path  ;; file err will have error.path
-          (console.log
+          (console.error
             fileErrorMsg
             error.path)
-          (console.log error))
+          (console.error error))
         (process.exit 1))
       (process.exit 0))))
 
