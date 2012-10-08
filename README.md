@@ -28,6 +28,11 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.8, 8 Oct 2012
+
+Added continuation monad  
+minor bug fixes  
+
 ### Version 0.2.7, 28 Sep 2012
 
 Added method chaining  
