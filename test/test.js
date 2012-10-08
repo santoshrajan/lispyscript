@@ -315,7 +315,6 @@ var lispyscript = function() {
             for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
             return _r;
         })("mBind",function(mv,mf) {
-            console.log(mv);
             return ((mv === null) ?
                 null :
                 mf(mv));
@@ -345,7 +344,6 @@ var lispyscript = function() {
             for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
             return _r;
         })("mBind",function(mv,mf) {
-            console.log(mv);
             return ((mv === null) ?
                 null :
                 mf(mv));

@@ -41,10 +41,9 @@ or when an output file cannot be written (permission denied).")
     ;; Once input ends try to compile & write to output.
     (input.on "end"
       (function ()
-        (var jscode
-             (try
-              (output.write (ls._compile source uri))
-              exit))))
+          (try
+            (output.write (ls._compile source uri))
+            exit)))
     (input.on "error" exit)
     (output.on "error" exit)))
 
@@ -65,7 +64,7 @@ or when an output file cannot be written (permission denied).")
       (if (= process.argv.length 3)
         (do
           (var i (get 2 process.argv))
-          (var o (i.replace ".ls" ".js"))
+          (var o (i.replace /\.ls$/ ".js"))
           (if (= i o)
             (console.log "Input file must have extension '.ls'")
             (compileFiles i o)))

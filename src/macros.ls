@@ -209,7 +209,7 @@
 
 (macro maybeMonad ()
   (object
-    "mBind" (function (mv mf) (console.log mv) (if (null? mv) null (mf mv)))
+    "mBind" (function (mv mf) (if (null? mv) null (mf mv)))
     "mResult" (function (v) v)
     "mZero" null))
 
@@ -237,6 +237,17 @@
                 (var ss (get 1 l))
                 ((f v) ss)))
     "mResult" (function (v) (function (s) [v, s]))))
+
+(macro continuationMonad ()
+  (object
+    "mBind" (function (mv mf)
+              (function (c)
+                (mv
+                  (function (v)
+                    ((mf v) c)))))
+    "mResult" (function (v)
+                (function (c)
+                  (c v)))))
 
 (macro m-bind (bindings expr)
   (mBind (#args-second bindings)
