@@ -1,71 +1,117 @@
-;; The lispy command script
-
 (require "./node")
 (var fs (require "fs"))
-(var path (require "path"))
 (var ls (require "../lib/ls"))
 (var repl (require "./repl"))
 
-;; node js error msg for sync io only reports libuv errno, so we make
-;; it a little more palatable.
-(var fileErrorMsg "File Error - %s
-This usually happens when an input file is not found
-or when an output file cannot be written (permission denied).")
+(var isValidFlag /-h\b|-r\b|-v\b/)
 
-(var exit
-  (function (error)
-    (if error
-      (do
-        (if error.path  ;; file err will have error.path
-          (console.error
-            fileErrorMsg
-            error.path)
-          (console.error error))
-        (process.exit 1))
-      (process.exit 0))))
+(var error
+  (function (err)
+    (console.error err.message)
+    (process.exit 1)))
 
-(var compileFiles
-  (function (input output)
-    (compile
-      (fs.createReadStream input)
-      (fs.createWriteStream output)
-      (path.resolve input))))
+(var help_str "
+Usage: lispy [-h] [-r] [<infile>] [<outfile>]
 
-(var compile
-  (function (input output uri)
-    (var source "")
-    ;; Accumulate text form input until it ends.
-    (input.on "data"
-      (function (chunck)
-        (set source (+ source (chunck.toString)))))
-    ;; Once input ends try to compile & write to output.
-    (input.on "end"
-      (function ()
+       Also compile stdin to stdout
+       eg. $ echo '(console.log \"hello\")' | lispy
+
+       <no arguments>    Run REPL
+       -h                Show this help
+       -r                Compile and run
+       -v                Show Version
+       <infile>          Input file to compile
+       <outfile>         Output JS file. If not given
+                         <outfile> will be <infile> with .js extension\n")
+
+;; We use maybe monad to carry out each step, so that we can
+;; halt the operation anytime in between if needed.
+
+(doMonad maybeMonad
+
+  ;; Start maybe Monad bindings
+  ;; First step get args without the first two (node and lispy).
+  (args (process.argv.slice 2)
+
+  ;; get the first arg
+  arg1 (args.shift)
+
+  ;; when no args do stdin -> stdout compile or run repl and return null to
+  ;; halt operations.
+  noargs
+    (when (undefined? arg1)
+      (var input process.stdin)
+      (var output process.stdout)
+      (input.resume)
+      (input.setEncoding "utf8")
+      (var source "")
+      ;; Accumulate text form input until it ends.
+      (input.on "data"
+        (function (chunck)
+          (set source (+ source (chunck.toString)))))
+      ;; Once input ends try to compile & write to output.
+      (input.on "end"
+        (function ()
           (try
-            (output.write (ls._compile source uri))
-            exit)))
-    (input.on "error" exit)
-    (output.on "error" exit)))
+            (output.write (ls._compile source process.cwd))
+            error)))
+      (input.on "error" error)
+      (output.on "error" error)
+      (setTimeout
+        (function ()
+          (if (= input.bytesRead 0)
+            (do
+              (input.removeAllListeners "data")
+              (repl.runrepl)))) 20)
+      null)
 
-(set exports.run
-  (function ()
-    (if (= process.argv.length 2)
-      (do
-        (process.stdin.resume)
-        (process.stdin.setEncoding "utf8")
-        (compile process.stdin process.stdout (process.cwd))
-        (setTimeout
-          (function ()
-            (if (= process.stdin.bytesRead 0)
-              (do
-                (process.stdin.removeAllListeners "data")
-                (repl.runrepl)))) 20))
+  ;; If arg1 = flag verify valid flag and halt if not otherwise
+  ;; set arg1 to next arg in args
+  flag
+    (when (= "-" (get 0 arg1))
+      (var flag arg1)
+      (set arg1 (args.shift))
+      (if (isValidFlag.test flag)
+        flag
+        (error (new Error (+ "Error: Invalid flag " flag)))))
 
-      (if (= process.argv.length 3)
-        (do
-          (var i (get 2 process.argv))
-          (var o (i.replace /\.ls$/ ".js"))
-          (if (= i o)
-            (console.log "Input file must have extension '.ls'")
-            (compileFiles i o)))
-        (compileFiles (get 2 process.argv) (get 3 process.argv))))))
+  run
+    (cond 
+      (= "-h" flag) (do (console.log help_str) null)
+      (= "-v" flag) (do (console.log (+ "Version " ls.version)) null)
+      (= "-r" flag) true)
+  
+
+  ;; if infile undefined
+  infile
+    (if arg1
+      arg1 
+      (error (new Error "Error: No Input file given")))
+
+  ;; set outfile args.shift. ! outfile set outfile to infile(.js) 
+  outfile 
+    (do
+      (var outfile (args.shift))
+      (unless outfile
+        (set outfile (infile.replace /\.ls$/ ".js"))
+        (if (= outfile infile)
+          (error (new Error "Error: Input file must have extension '.ls'"))))
+      outfile)
+
+  ;; compile infile to outfile. if not run return null.
+  js
+    (try
+      (fs.writeFileSync outfile
+        (ls._compile 
+          (fs.readFileSync infile "utf8")
+        infile)
+      "utf8")
+      (if run run null)
+      (function (err)
+        (error err)
+        null)))                     ;; end of maybe Monad bindings
+
+  ;; we are here if -r true, so run it!
+  (->
+    (require "child_process")
+    (.spawn "node" [outfile] {stdio: "inherit"})))
