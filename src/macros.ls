@@ -2,7 +2,7 @@
 ;; default by the LispyScript compiler.
 
 
-;;;;;;;;;;;;;;;;;;;; Operators ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; Conditinals ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (macro undefined? (obj)
   (= (typeof ~obj) "undefined"))
@@ -39,7 +39,7 @@
   (= (Object.prototype.toString.call ~obj) "[object Function]"))
 
 
-;;;;;;;;;;;;;;;;;;;;;;; Statements ;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;; Expressions ;;;;;;;;;;;;;;;;;;;;
 
 (macro do (rest...)
   ((function () ~rest...)))
@@ -56,6 +56,18 @@
 (macro array (rest...)
   ((function ()
     (Array.prototype.slice.call arguments)) ~rest...))
+
+(macro arrayInit (len obj)
+  ((function (l o)
+    (var ret [])
+    (javascript "for(var i=0;i<l;i++) ret.push(o);")
+    ret) ~len ~obj))
+
+(macro arrayInit2d (i j obj)
+  ((function (i j o)
+    (var ret [])
+    (javascript "for(var n=0;n<i;n++){var inn=[];for(var m=0;m<j;m++) inn.push(o); ret.push(inn);}")
+    ret) ~i ~j ~obj))
 
 (macro object (rest...)
   ((function ()
@@ -82,6 +94,13 @@
     (each _k
       (function (elem)
         (f.call s (get elem o) elem o)))) ~obj ~fn ~rest...))
+
+(macro each2d (arr fn)
+  (each ~arr
+    (function (___elem ___i ___oa)
+      (each ___elem
+        (function (___val ___j ___ia)
+          (~fn ___val ___j ___i ___ia ___oa))))))
 
 (macro reduce (arr fn rest...)
   ((function (arr f init)
@@ -126,6 +145,9 @@
             (javascript "while(___result===undefined) ___result=___f.apply(this,___nextArgs);")
             ___result))))
     (recur ~@vals))))
+
+(macro for (rest...)
+  (doMonad arrayMonad ~rest...))
 
 
 ;;;;;;;;;;;;;;;;;;;; Templates ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
