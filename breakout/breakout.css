@@ -1,0 +1,14 @@
+body {
+}
+
+#wrapper {
+	margin: 20px auto 0px auto;
+	padding: 0;
+	width: 450px;
+}
+
+#breakout {
+	margin: 0;
+	padding: 0;
+	background: #ddd;
+}
