@@ -130,7 +130,7 @@ var tick = function() {
         })() :
         clear());
 };
-(window).addEventListener("load",function(event) {
+window.onload = function(event) {
     canvas = document.getElementById("breakout");
     context = canvas.getContext("2d");
     brickWidth = (canvas.width / bricksNumX);
@@ -139,4 +139,4 @@ var tick = function() {
     });
     init();
     return window.setInterval(tick,30);
-});
+};
