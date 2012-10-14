@@ -28,6 +28,14 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.2.9, 14 Oct 2012
+
+Added more options to lispy command  
+Added arrayInit, arrayInit2d, each2d  
+Added breakout game example  
+Added shortcut macros for browser usage  
+Bug fix for division operator    
+
 ### Version 0.2.8, 8 Oct 2012
 
 Added continuation monad  

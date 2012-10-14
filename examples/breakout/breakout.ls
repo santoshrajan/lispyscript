@@ -1,14 +1,16 @@
 ;; The breakout game written in LisoyScript
-;; Open the html filr in the same folder to try ii
+;; Open the html file in the same folder to try it.
+;; Requires canvas support in browser
+;; Based on javascript version here http://www.jsdares.com/
 ;;
 
 (include "browser.ls")
 
-(var canvas ($ "breakout"))
-(var context (canvas.getContext "2d"))
+(var canvas null)
+(var context null)
 (var bricksNumX 7)
 (var bricksNumY 5)
-(var brickWidth (/ canvas.width bricksNumX))
+(var brickWidth null)
 (var brickHeight 20)
 (var brickMargin 4)
 (var paddleWidth 80)
@@ -101,6 +103,10 @@
         (drawBricks))
       (clear))))
 
-(init)
-($listener canvas "mousemove" (set paddleX event.layerX))
-(window.setInterval tick 30)
+(set window.onload (function (event)
+  (set canvas ($ "breakout"))
+  (set context (canvas.getContext "2d"))
+  (set brickWidth (/ canvas.width bricksNumX))
+  ($listener canvas "mousemove" (set paddleX (|| event.offsetX (- event.pageX canvas.offsetLeft))))
+  (init)
+  (window.setInterval tick 30)))

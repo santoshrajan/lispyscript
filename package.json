@@ -1,6 +1,6 @@
 {
   "name": "lispyscript",
-  "description": "A Javascript with Lispy syntax and macros",
+  "description": "A JavaScript with Lispy Syntax and Macros",
   "keywords": ["javascript", "language", "lispyscript", "compiler", "lisp"],
   "author": "Santosh Rajan",
   "version": "0.2.9",
