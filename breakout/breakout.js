@@ -135,7 +135,7 @@ window.onload = function(event) {
     context = canvas.getContext("2d");
     brickWidth = (canvas.width / bricksNumX);
     (canvas).addEventListener("mousemove",function(event) {
-        paddleX = event.offsetX;
+        paddleX = (event.offsetX || (event.pageX - canvas.offsetLeft));
     });
     init();
     return window.setInterval(tick,30);
