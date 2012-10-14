@@ -183,8 +183,23 @@ $ npm link
         <pre>$ lispy test.ls</pre>
         <h5>Compile 'test.ls' to 'test.js' in another folder</h5>
         <pre>$ lispy src/test.ls lib/test.js</pre>
-        <h5>Compile stdin to stdout</h5>
-        <pre>$ echo '(console.log "Hello World")' | lispy</pre>
+        <h5>More Options</h5>
+        <pre>$ lispy -h
+
+Usage: lispy [-h] [-r] [&lt;infile&gt;] [&lt;outfile&gt;]
+
+       Also compile stdin to stdout
+       eg. $ echo '(console.log "hello")' | lispy
+
+       &lt;no arguments&gt;    Run REPL
+       -h                Show this help
+       -r                Compile and run
+       -v                Show Version
+       &lt;infile&gt;          Input file to compile
+       &lt;outfile&gt;         Output JS file. If not given
+                         &lt;outfile&gt; will be &lt;infile&gt; 
+                          with .js extension
+        </pre>
         <div class='alert alert-info'>
             <p>A LispyScript example using Nodejs, Expressjs, Twitter Bootstrap and LispyScript html5 templates.</p>
             <p>

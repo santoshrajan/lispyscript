@@ -1,6 +1,6 @@
 ;; The breakout game written in LisoyScript
-;; Open the html filr in the same folder to try ii
-;;
+;; Open the html file in the same folder to try it.
+;; Requires canvas support in browser
 
 (include "browser.ls")
 

@@ -178,6 +178,19 @@ The literal notation is evaluated in the Javascript context, and will work in mo
 LispyScript code evaluated, like when one of the elements is a LispyScript anonymous function. And unlike Javascript
 "new Array" a single integer passed will still create a proper array with the int as the first element.</p>
 
+<h4>(arrayInit length initialVal)</h4>
+<p>Create a Javascript Array of length <code>length</code>, with all elements initialized 
+to <code>initialVal</code></p>
+<pre>(arrayInit 5 null)  =>  [null, null, null, null, null]
+</pre>
+
+<h4>(arrayInit2d outerLength innerLength initialVal)</h4>
+<p>Create a Javascript Array of length <code>outerLength</code>, with all elements initialized 
+to arrays of length <code>innerLength</code>, and all elements of inner arrays 
+initialized to <code>initialVal</code></p>
+<pre>(arrayInit2d 2 3 null)  =>  [[null, null, null], [null, null, null]
+</pre>
+
 <h4>(object key1 val1 key2 val2 ....)</h4>
 <p>Create a Javascript Object.</p>
 <pre>(object "a" 1 "b" 2 "c" 3) => {a: 1, b:2, c:3}
@@ -252,8 +265,9 @@ which passes control back to the top of the loop with a new set of bindings for 
 <p>The example above will return a countdown array starting from 5 "[5, 4, 3, 2, 1]"</p>
 <p>Read more about loop recur and tail call optimization <a href="http://lispyscript.blogspot.in/2012/09/loop-recur-and-tail-call-optimization.html">here.</a></p>
 
-<h4>(each array (iterator) [(context)])</h4>
-<p>each takes an array, an iterator function and an optional context. The iterator is called for each
+<h4>(each array iterator [(context)])</h4>
+<p><code>each</code> takes an array, an iterator function and an optional context.
+  The iterator is called for each
 element of the array with element value, index, array. If context is provided then "this" inside the 
 iterator function will be the context object.</p>
 <pre>(each [1, 2, 3]
@@ -261,11 +275,17 @@ iterator function will be the context object.</p>
     (console.log elem)))
 </pre>
 
+<h4>(each2d array iterator)</h4>
+<p><code>each2d</code> takes an array whose elements are also arrays (2d array), and calls the
+iterator function for each element. The iterator is called with the following arguments. 
+<code>value</code> <code>innerIndex</code> <code>outerIndex</code>
+<code>innerArray</code> <code>outerArray</code>.</p>
+
 <h4>(eachKey object (iterator) [context])</h4>
-<p>eachKey iterates over a map (object) and calls the iterator with value, key, object respectively.</p>
+<p><code>eachKey</code> iterates over a map (object) and calls the iterator with value, key, object respectively.</p>
 
 <h4>(reduce array (iterator) [initial])</h4>
-<p>reduce takes an array, an iterator function and an optional initial value. The iterator is called
+<p><code>reduce</code> takes an array, an iterator function and an optional initial value. The iterator is called
 with the following paramaters, previous value returned by the last call to iterator, current value of array element, array index, and array. First time around the initial value is used for previous value. If no initial value is given, the previous value is set to the first element of the array and the iteration starts from the second element. The last value returned by the iterator is returned by reduce.</p>
 <pre>(reduce [1,2,3,4]
   (function (accum val i list)
@@ -274,11 +294,42 @@ with the following paramaters, previous value returned by the last call to itera
 <p>The above call to reduce will return 10.</p>
 
 <h4>(map array (iterator) [(context)])</h4>
-<p>map takes an array, an iterator function and an optional context. The iterator is called for each
+<p><code>map</code> takes an array, an iterator function and an optional context. The iterator is called for each
 element of the array with element value, index, array. The returned value from the iterator for each call
 is pushed into a new array. map returns the new array. If context is provided then "this" inside the 
 iterator function will be the context object.</p>
 
+<h4>(for (name1 array1 [name2 array2 ...] (result expression))</h4>
+<p>In LispyScript <code>for</code> is a list comprehension expression. <code>for</code> does not work
+like the JavaScript "for" statement.</p>
+<pre>
+(for
+  (a [1,2,3] 
+   b [3,4,5])
+  (+ a b))
+
+;; ==> [ 4, 5, 6, 5, 6, 7, 6, 7, 8 ]
+
+;; we only want results that are &lt;= 6 below
+
+(for
+  (a [1,2,3]
+   b [3,4,5])
+  (when (&lt;= (+ a b) 6)
+    (+ a b)))
+
+;; ==> [ 4, 5, 6, 5, 6, 6 ]
+
+(for 
+  (letters ["a", "b", "c"]
+   numbers [3, 4, 5])
+  [letters, numbers])
+
+;; ==> [['a',3],['a',4],['a',5],['b',3],['b',4],['b',5],['c',3],['c',4],['c',5]]
+</pre>
+<p>The bindings for <code>a</code> and <code>b</code> are made
+for every element of the corresponding arrays. In the second example we applied a <code>when</code> condition
+to the result expression to keep out results greater than six.</p>
 
 <a name="macros"></a>        
 <h2 style="padding-top:40px">Macros</h2>
