@@ -101,10 +101,10 @@
         (drawBricks))
       (clear))))
 
-(set window.onload (function (event)
+;; (set window.onload (function (event)
   (set canvas ($ "breakout"))
   (set context (canvas.getContext "2d"))
   (set brickWidth (/ canvas.width bricksNumX))
   ($listener canvas "mousemove" (set paddleX (|| event.offsetX (- event.pageX canvas.offsetLeft))))
   (init)
-  (window.setInterval tick 30)))
+  (window.setInterval tick 30) ;; ))

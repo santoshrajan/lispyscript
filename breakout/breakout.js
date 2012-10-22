@@ -130,13 +130,11 @@ var tick = function() {
         })() :
         clear());
 };
-window.onload = function(event) {
-    canvas = document.getElementById("breakout");
-    context = canvas.getContext("2d");
-    brickWidth = (canvas.width / bricksNumX);
-    (canvas).addEventListener("mousemove",function(event) {
-        paddleX = (event.offsetX || (event.pageX - canvas.offsetLeft));
-    });
-    init();
-    return window.setInterval(tick,30);
-};
+canvas = document.getElementById("breakout");
+context = canvas.getContext("2d");
+brickWidth = (canvas.width / bricksNumX);
+(canvas).addEventListener("mousemove",function(event) {
+    paddleX = (event.offsetX || (event.pageX - canvas.offsetLeft));
+});
+init();
+window.setInterval(tick,30);
