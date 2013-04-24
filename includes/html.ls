@@ -206,8 +206,9 @@
 (macro noscript (rest...)
   (_LS.expandTag "noscript" ~rest...))
 
-(macro object (rest...)
-  (_LS.expandTag "object" ~rest...))
+;; Trashes lispyscript 'object' statement
+;; (macro object (rest...)
+;;  (_LS.expandTag "object" ~rest...))
 
 (macro ol (rest...)
   (_LS.expandTag "ol" ~rest...))

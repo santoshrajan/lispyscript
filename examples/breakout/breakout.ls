@@ -1,4 +1,4 @@
-;; The breakout game written in LisoyScript
+;; The breakout game written in LispyScript
 ;; Open the html file in the same folder to try it.
 ;; Requires canvas support in browser
 ;; Based on javascript version here http://www.jsdares.com/

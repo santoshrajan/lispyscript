@@ -28,6 +28,11 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.3.0, 24 Apr 2013
+
+Dropped support for older browsers. (Cleaner code)  
+Minor bug fix    
+
 ### Version 0.2.9, 14 Oct 2012
 
 Added more options to lispy command  
