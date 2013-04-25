@@ -2,7 +2,7 @@
 ;; default by the LispyScript compiler.
 
 
-;;;;;;;;;;;;;;;;;;;; Conditinals ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; Conditionals ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (macro undefined? (obj)
   (= (typeof ~obj) "undefined"))
