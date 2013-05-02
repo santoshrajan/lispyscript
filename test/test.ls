@@ -24,7 +24,7 @@
 (assert (array? []) "(array? []])")
 (assert (false? (array? {})) "(false? (array? {}))")
 (assert (object? {}) "(object? {})")
-(assert (object? []) "(object? [])")
+(assert (false? (object? [])) "(object? [])")
 (assert (false? (object? null)) "(false? (object? null))")
 (assert
   (= 10

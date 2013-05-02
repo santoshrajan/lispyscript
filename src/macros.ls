@@ -32,8 +32,7 @@
   (= (Object.prototype.toString.call ~obj) "[object Array]"))
 
 (macro object? (obj)
-  ((function (obj)
-    (= obj (Object obj))) ~obj))
+  (= (Object.prototype.toString.call ~obj) "[object Object]"))
 
 (macro function? (obj)
   (= (Object.prototype.toString.call ~obj) "[object Function]"))
@@ -68,12 +67,6 @@
     (var ret [])
     (javascript "for(var n=0;n<i;n++){var inn=[];for(var m=0;m<j;m++) inn.push(o); ret.push(inn);}")
     ret) ~i ~j ~obj))
-
-;(macro object (rest...)
-;  ((function ()
-;    (var _r {})
-;    (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
-;    _r) ~rest...))
 
 ;; method chaining macro
 (macro -> (func form rest...)

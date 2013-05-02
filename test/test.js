@@ -35,17 +35,11 @@ var lispyscript = function() {
         ("Passed - " + "(array? []])") :
         ("Failed - " + "(array? []])")),((true === (false === (Object.prototype.toString.call({}) === "[object Array]"))) ?
         ("Passed - " + "(false? (array? {}))") :
-        ("Failed - " + "(false? (array? {}))")),((true === (function(obj) {
-            return (obj === Object(obj));
-        })({})) ?
+        ("Failed - " + "(false? (array? {}))")),((true === (Object.prototype.toString.call({}) === "[object Object]")) ?
         ("Passed - " + "(object? {})") :
-        ("Failed - " + "(object? {})")),((true === (function(obj) {
-            return (obj === Object(obj));
-        })([])) ?
+        ("Failed - " + "(object? {})")),((true === (false === (Object.prototype.toString.call([]) === "[object Object]"))) ?
         ("Passed - " + "(object? [])") :
-        ("Failed - " + "(object? [])")),((true === (false === (function(obj) {
-            return (obj === Object(obj));
-        })(null))) ?
+        ("Failed - " + "(object? [])")),((true === (false === (Object.prototype.toString.call(null) === "[object Object]"))) ?
         ("Passed - " + "(false? (object? null))") :
         ("Failed - " + "(false? (object? null))")),((true === (10 === (true ?
             (function() {
