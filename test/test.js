@@ -3,9 +3,7 @@ var testTemplate = function(one,two,three) {
     return ["1",one,"2",two,"3",three].join('');
 };
 var lispyscript = function() {
-    return (function() {
-        return Array.prototype.slice.call(arguments);
-    })(((true === (true === true)) ?
+    return [((true === (true === true)) ?
         ("Passed - " + "(true? true)") :
         ("Failed - " + "(true? true)")),((true === (false === false)) ?
         ("Passed - " + "(false? false)") :
@@ -133,9 +131,7 @@ var lispyscript = function() {
         ("Passed - " + "loop recur test") :
         ("Failed - " + "loop recur test")),((true === (10 === (function() {
             var ret = 0;
-            Array.prototype.forEach.call((function() {
-                return Array.prototype.slice.call(arguments);
-            })(1,2,3,4),function(val) {
+            ([1,2,3,4]).forEach(function(val) {
                 ret = (ret + val);
             });
             return ret;
@@ -145,36 +141,26 @@ var lispyscript = function() {
             var ret = 0;
             (function(o,f,s) {
                 var _k = Object.keys(o);
-                return Array.prototype.forEach.call(_k,function(elem) {
+                return (_k).forEach(function(elem) {
                     return f.call(s,o[elem],elem,o);
                 });
-            })((function() {
-                var _r = {};
-                for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-                return _r;
-            })("a",1,"b",2,"c",3,"d",4),function(val) {
+            })({a: 1, b: 2, c: 3, d: 4},function(val) {
                 ret = (ret + val);
             });
             return ret;
         })())) ?
         ("Passed - " + "eachKey test") :
-        ("Failed - " + "eachKey test")),((true === (10 === Array.prototype.reduce.call((function() {
-            return Array.prototype.slice.call(arguments);
-        })(1,2,3,4),function(accum,val) {
+        ("Failed - " + "eachKey test")),((true === (10 === ([1, 2, 3, 4]).reduce(function(accum,val) {
             return (accum + val);
         },0))) ?
         ("Passed - " + "reduce test with init") :
-        ("Failed - " + "reduce test with init")),((true === (10 === Array.prototype.reduce.call((function() {
-            return Array.prototype.slice.call(arguments);
-        })(1,2,3,4),function(accum,val) {
+        ("Failed - " + "reduce test with init")),((true === (10 === ([1, 2, 3, 4]).reduce(function(accum,val) {
             return (accum + val);
         }))) ?
         ("Passed - " + "reduce test without init") :
-        ("Failed - " + "reduce test without init")),((true === (20 === Array.prototype.reduce.call(Array.prototype.map.call((function() {
-            return Array.prototype.slice.call(arguments);
-        })(1,2,3,4),function(val) {
+        ("Failed - " + "reduce test without init")),((true === (20 === (([1, 2, 3, 4]).map(function(val) {
             return (val * 2);
-        }),function(accum,val) {
+        })).reduce(function(accum,val) {
             return (accum + val);
         },0))) ?
         ("Passed - " + "map test") :
@@ -184,7 +170,7 @@ var lispyscript = function() {
             var ___ret = "";
             (function(o,f,s) {
                 var _k = Object.keys(o);
-                return Array.prototype.forEach.call(_k,function(elem) {
+                return (_k).forEach(function(elem) {
                     return f.call(s,o[elem],elem,o);
                 });
             })({"1":1,"2":2,"3":3},function(value,key) {
@@ -232,15 +218,11 @@ var lispyscript = function() {
                     })();
                 });
             });
-        })((function() {
-            var _r = {};
-            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-            return _r;
-        })("mBind",function(mv,mf) {
+        })({"mBind": function(mv,mf) {
             return mf(mv);
-        },"mResult",function(v) {
+        },"mResult": function(v) {
             return v;
-        })))) ?
+        }}))) ?
         ("Passed - " + "Identity Monad Test") :
         ("Failed - " + "Identity Monad Test")),((true === (3 === (function(___monad) {
             var mBind = ___monad.mBind;
@@ -259,17 +241,13 @@ var lispyscript = function() {
                     })();
                 });
             });
-        })((function() {
-            var _r = {};
-            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-            return _r;
-        })("mBind",function(mv,mf) {
+        })({"mBind": function(mv,mf) {
             return ((mv === null) ?
                 null :
                 mf(mv));
-        },"mResult",function(v) {
+        },"mResult": function(v) {
             return v;
-        },"mZero",null)))) ?
+        },"mZero": null}))) ?
         ("Passed - " + "maybe Monad Test") :
         ("Failed - " + "maybe Monad Test")),((true === (null === (function(___monad) {
             var mBind = ___monad.mBind;
@@ -288,19 +266,15 @@ var lispyscript = function() {
                     })();
                 });
             });
-        })((function() {
-            var _r = {};
-            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-            return _r;
-        })("mBind",function(mv,mf) {
+        })({"mBind": function(mv,mf) {
             return ((mv === null) ?
                 null :
                 mf(mv));
-        },"mResult",function(v) {
+        },"mResult": function(v) {
             return v;
-        },"mZero",null)))) ?
+        },"mZero": null}))) ?
         ("Passed - " + "maybe Monad null Test") :
-        ("Failed - " + "maybe Monad null Test")),((true === (54 === Array.prototype.reduce.call((function(___monad) {
+        ("Failed - " + "maybe Monad null Test")),((true === (54 === ((function(___monad) {
             var mBind = ___monad.mBind;
             var mResult = ___monad.mResult;
             var mZero = ___monad.mZero;
@@ -317,25 +291,21 @@ var lispyscript = function() {
                     })();
                 });
             });
-        })((function() {
-            var _r = {};
-            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-            return _r;
-        })("mBind",function(mv,mf) {
-            return Array.prototype.reduce.call(Array.prototype.map.call(mv,mf),function(accum,val) {
+        })({"mBind": function(mv,mf) {
+            return ((mv).map(mf)).reduce(function(accum,val) {
                 return accum.concat(val);
             },[]);
-        },"mResult",function(v) {
+        },"mResult": function(v) {
             return [v];
-        },"mZero",[],"mPlus",function() {
-            return Array.prototype.reduce.call(Array.prototype.slice.call(arguments),function(accum,val) {
+        },"mZero": [],"mPlus": function() {
+            return (Array.prototype.slice.call(arguments)).reduce(function(accum,val) {
                 return accum.concat(val);
             },[]);
-        })),function(accum,val) {
+        }})).reduce(function(accum,val) {
             return (accum + val);
         },0))) ?
         ("Passed - " + "arrayMonad test") :
-        ("Failed - " + "arrayMonad test")),((true === (32 === Array.prototype.reduce.call((function(___monad) {
+        ("Failed - " + "arrayMonad test")),((true === (32 === ((function(___monad) {
             var mBind = ___monad.mBind;
             var mResult = ___monad.mResult;
             var mZero = ___monad.mZero;
@@ -356,25 +326,21 @@ var lispyscript = function() {
                     })();
                 });
             });
-        })((function() {
-            var _r = {};
-            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-            return _r;
-        })("mBind",function(mv,mf) {
-            return Array.prototype.reduce.call(Array.prototype.map.call(mv,mf),function(accum,val) {
+        })({"mBind": function(mv,mf) {
+            return ((mv).map(mf)).reduce(function(accum,val) {
                 return accum.concat(val);
             },[]);
-        },"mResult",function(v) {
+        },"mResult": function(v) {
             return [v];
-        },"mZero",[],"mPlus",function() {
-            return Array.prototype.reduce.call(Array.prototype.slice.call(arguments),function(accum,val) {
+        },"mZero": [],"mPlus": function() {
+            return (Array.prototype.slice.call(arguments)).reduce(function(accum,val) {
                 return accum.concat(val);
             },[]);
-        })),function(accum,val) {
+        }})).reduce(function(accum,val) {
             return (accum + val);
         },0))) ?
         ("Passed - " + "arrayMonad when test") :
-        ("Failed - " + "arrayMonad when test")),((true === (6 === Array.prototype.reduce.call((function(___monad) {
+        ("Failed - " + "arrayMonad when test")),((true === (6 === ((function(___monad) {
             var mBind = ___monad.mBind;
             var mResult = ___monad.mResult;
             var mZero = ___monad.mZero;
@@ -393,25 +359,21 @@ var lispyscript = function() {
                         undefined));
                 })();
             });
-        })((function() {
-            var _r = {};
-            for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}
-            return _r;
-        })("mBind",function(mv,mf) {
-            return Array.prototype.reduce.call(Array.prototype.map.call(mv,mf),function(accum,val) {
+        })({"mBind": function(mv,mf) {
+            return ((mv).map(mf)).reduce(function(accum,val) {
                 return accum.concat(val);
             },[]);
-        },"mResult",function(v) {
+        },"mResult": function(v) {
             return [v];
-        },"mZero",[],"mPlus",function() {
-            return Array.prototype.reduce.call(Array.prototype.slice.call(arguments),function(accum,val) {
+        },"mZero": [],"mPlus": function() {
+            return (Array.prototype.slice.call(arguments)).reduce(function(accum,val) {
                 return accum.concat(val);
             },[]);
-        })),function(accum,val) {
+        }})).reduce(function(accum,val) {
             return (accum + val);
         },0))) ?
         ("Passed - " + "arrayMonad when null values test") :
-        ("Failed - " + "arrayMonad when null values test")));
+        ("Failed - " + "arrayMonad when null values test"))];
 };
 var browserTest = function() {
     var el = document.getElementById("testresult");
@@ -421,12 +383,12 @@ var browserTest = function() {
             var tests = groupname();
             var passed = 0;
             var failed = 0;
-            Array.prototype.forEach.call(tests,function(elem) {
+            (tests).forEach(function(elem) {
                 return (elem.match(/^Passed/) ?
                     ++passed :
                     ++failed);
             });
-            return [["\n",desc,"\n",start,"\n\n"].join(''),Array.prototype.reduce.call(tests,function(___memo,elem,index) {
+            return [["\n",desc,"\n",start,"\n\n"].join(''),(tests).reduce(function(___memo,elem,index) {
                 return (___memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
         })(lispyscript,"LispyScript Testing"),"</pre>"].join('') :
@@ -435,12 +397,12 @@ var browserTest = function() {
             var tests = groupname();
             var passed = 0;
             var failed = 0;
-            Array.prototype.forEach.call(tests,function(elem) {
+            (tests).forEach(function(elem) {
                 return (elem.match(/^Passed/) ?
                     ++passed :
                     ++failed);
             });
-            return [["\n",desc,"\n",start,"\n\n"].join(''),Array.prototype.reduce.call(tests,function(___memo,elem,index) {
+            return [["\n",desc,"\n",start,"\n\n"].join(''),(tests).reduce(function(___memo,elem,index) {
                 return (___memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
         })(lispyscript,"LispyScript Testing"));
@@ -451,12 +413,12 @@ var browserTest = function() {
         var tests = groupname();
         var passed = 0;
         var failed = 0;
-        Array.prototype.forEach.call(tests,function(elem) {
+        (tests).forEach(function(elem) {
             return (elem.match(/^Passed/) ?
                 ++passed :
                 ++failed);
         });
-        return [["\n",desc,"\n",start,"\n\n"].join(''),Array.prototype.reduce.call(tests,function(___memo,elem,index) {
+        return [["\n",desc,"\n",start,"\n\n"].join(''),(tests).reduce(function(___memo,elem,index) {
             return (___memo + [elem,"\n"].join(''));
         },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
     })(lispyscript,"LispyScript Testing")) :

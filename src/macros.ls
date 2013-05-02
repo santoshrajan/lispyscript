@@ -53,9 +53,9 @@
 (macro cond (rest...)
   (if (#args-shift rest...) (#args-shift rest...) (#args-if rest... (cond ~rest...))))
 
-(macro array (rest...)
-  ((function ()
-    (Array.prototype.slice.call arguments)) ~rest...))
+;(macro array (rest...)
+;  ((function ()
+;    (Array.prototype.slice.call arguments)) ~rest...))
 
 (macro arrayInit (len obj)
   ((function (l o)
@@ -69,11 +69,11 @@
     (javascript "for(var n=0;n<i;n++){var inn=[];for(var m=0;m<j;m++) inn.push(o); ret.push(inn);}")
     ret) ~i ~j ~obj))
 
-(macro object (rest...)
-  ((function ()
-    (var _r {})
-    (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
-    _r) ~rest...))
+;(macro object (rest...)
+;  ((function ()
+;    (var _r {})
+;    (javascript "for(var i=0,l=arguments.length;i<l;i+=2){_r[arguments[i]]=arguments[i+1];}")
+;    _r) ~rest...))
 
 ;; method chaining macro
 (macro -> (func form rest...)
@@ -83,11 +83,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;; Iteration and Looping ;;;;;;;;;;;;;;;;;;;;
 
-(macro each (rest...)
-  (Array.prototype.forEach.call ~rest...))
+(macro each (arr rest...)
+  ((.forEach ~arr) ~rest...))
 
-(macro reduce (rest...)
-  (Array.prototype.reduce.call ~rest...))
+(macro reduce (arr rest...)
+  ((.reduce ~arr) ~rest...))
  
 (macro eachKey (obj fn rest...)
   ((function (o f s)
@@ -103,9 +103,8 @@
         (function (___val ___j ___ia)
           (~fn ___val ___j ___i ___ia ___oa))))))
 
-
-(macro map (rest...)
-  (Array.prototype.map.call ~rest...))
+(macro map (arr rest...)
+  ((.map ~arr) ~rest...))
 
 (macro filter (rest...)
   (Array.prototype.filter.call ~rest...))

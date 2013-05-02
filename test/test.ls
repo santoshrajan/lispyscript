@@ -86,23 +86,23 @@
   (= 10
     (do
       (var ret 0)
-      (eachKey (object "a" 1 "b" 2 "c" 3 "d" 4)
+      (eachKey {a: 1, b: 2, c: 3, d: 4}
         (function (val)
           (set ret (+ ret val))))
       ret)) "eachKey test")
 (assert 
   (= 10
-    (reduce (array 1 2 3 4)
+    (reduce [1, 2, 3, 4]
       (function (accum val)
         (+ accum val)) 0)) "reduce test with init")
 (assert 
   (= 10
-    (reduce (array 1 2 3 4)
+    (reduce [1, 2, 3, 4]
       (function (accum val)
         (+ accum val)))) "reduce test without init")
 (assert 
   (= 20
-    (reduce (map (array 1 2 3 4) (function (val) (* val 2)))
+    (reduce (map [1, 2, 3, 4] (function (val) (* val 2)))
       (function (accum val)
         (+ accum val)) 0)) "map test")
 (assert (= "112233" (testTemplate 1 2 3)) "template test")
