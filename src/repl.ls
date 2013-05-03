@@ -1,10 +1,9 @@
 ;; A very simple REPL written in LispyScript
 
 (require "./node")
-(var readline (require "readline"))
-(var ls (require "../lib/ls"))
-
-(var prefix "lispy> ")
+(var readline (require "readline")
+     ls (require "../lib/ls")
+     prefix "lispy> ")
 
 (set exports.runrepl
   (function ()

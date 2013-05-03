@@ -1,14 +1,12 @@
 (require "./node")
-(var fs (require "fs"))
-(var ls (require "../lib/ls"))
-(var repl (require "./repl"))
-
-(var isValidFlag /-h\b|-r\b|-v\b/)
-
-(var error
-  (function (err)
-    (console.error err.message)
-    (process.exit 1)))
+(var fs (require "fs")
+     ls (require "../lib/ls")
+     repl (require "./repl")
+     isValidFlag /-h\b|-r\b|-v\b/
+     error
+       (function (err)
+         (console.error err.message)
+         (process.exit 1)))
 
 (var help_str "
 Usage: lispy [-h] [-r] [<infile>] [<outfile>]

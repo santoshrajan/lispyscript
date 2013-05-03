@@ -1,6 +1,6 @@
 (require "amd-loader")
-(var fs (require "fs"))
-(var ls (require "../lib/ls"))
+(var fs (require "fs")
+     ls (require "../lib/ls"))
 
 (set global.define
   (function ()

@@ -52,10 +52,6 @@
 (macro cond (rest...)
   (if (#args-shift rest...) (#args-shift rest...) (#args-if rest... (cond ~rest...))))
 
-;(macro array (rest...)
-;  ((function ()
-;    (Array.prototype.slice.call arguments)) ~rest...))
-
 (macro arrayInit (len obj)
   ((function (l o)
     (var ret [])
@@ -110,10 +106,10 @@
 
 (macro loop (args vals rest...)
   ((function ()
-    (var recur null)
-    (var ___result !undefined)
-    (var ___nextArgs null)
-    (var ___f (function ~args ~rest...))
+    (var recur null
+         ___result !undefined
+         ___nextArgs null
+         ___f (function ~args ~rest...))
     (set recur
       (function ()
         (set ___nextArgs arguments)
@@ -183,10 +179,10 @@
 
 (macro testRunner (groupname desc)
   ((function (groupname desc)
-    (var start (new Date))
-    (var tests (groupname))
-    (var passed 0)
-    (var failed 0)
+    (var start (new Date)
+         tests (groupname)
+         passed 0
+         failed 0)
     (each tests
       (function (elem)
         (if (elem.match /^Passed/)
@@ -205,25 +201,25 @@
 
 (macro identityMonad ()
   (object
-    "mBind" (function (mv mf) (mf mv))
-    "mResult" (function (v) v)))
+    mBind (function (mv mf) (mf mv))
+    mResult (function (v) v)))
 
 (macro maybeMonad ()
   (object
-    "mBind" (function (mv mf) (if (null? mv) null (mf mv)))
-    "mResult" (function (v) v)
-    "mZero" null))
+    mBind (function (mv mf) (if (null? mv) null (mf mv)))
+    mResult (function (v) v)
+    mZero null))
 
 (macro arrayMonad ()
   (object
-    "mBind" (function (mv mf)
+    mBind (function (mv mf)
               (reduce
                 (map mv mf)
                 (function (accum val) (accum.concat val))
                 []))
-    "mResult" (function (v) [v])
-    "mZero" []
-    "mPlus" (function ()
+    mResult (function (v) [v])
+    mZero []
+    mPlus (function ()
               (reduce
                 (Array.prototype.slice.call arguments)
                 (function (accum val) (accum.concat val))
@@ -231,22 +227,22 @@
 
 (macro stateMonad ()
   (object
-    "mBind" (function (mv f)
+    mBind (function (mv f)
               (function (s)
-                (var l (mv s))
-                (var v (get 0 l))
-                (var ss (get 1 l))
+                (var l (mv s)
+                     v (get 0 l)
+                     ss (get 1 l))
                 ((f v) ss)))
-    "mResult" (function (v) (function (s) [v, s]))))
+    mResult (function (v) (function (s) [v, s]))))
 
 (macro continuationMonad ()
   (object
-    "mBind" (function (mv mf)
+    mBind (function (mv mf)
               (function (c)
                 (mv
                   (function (v)
                     ((mf v) c)))))
-    "mResult" (function (v)
+    mResult (function (v)
                 (function (c)
                   (c v)))))
 
@@ -257,10 +253,10 @@
 
 (macro withMonad (monad rest...)
   ((function (___monad)
-    (var mBind ___monad.mBind)
-    (var mResult ___monad.mResult)
-    (var mZero ___monad.mZero)
-    (var mPlus ___monad.mPlus)
+    (var mBind ___monad.mBind
+         mResult ___monad.mResult
+         mZero ___monad.mZero
+         mPlus ___monad.mPlus)
     ~rest...) (~monad)))
 
 (macro doMonad (monad bindings expr)
