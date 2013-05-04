@@ -152,6 +152,13 @@ string?, object?, array?, function?,
   (.listen 3000 "127.0.0.1"))
 </pre>
 
+<h4>(var name1 value1 name2 value2 ...)</h4>
+<p><code>var</code> allows you to create lexically scoped variables in the current scope.
+This will compile to the JavaScript <code>var</code> statement so the variables will be hoisted.</p>
+<pre>(var a 1 b 2)    =>  var a = 1,
+                         b = 2;
+</pre>
+
 <h4>(str (string expression) ...)</h4>
 <p>Adds up all the strings.</p>
 <pre>(var title &quot;My Home Page&quot;)
