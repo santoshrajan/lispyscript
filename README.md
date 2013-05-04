@@ -28,6 +28,12 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.3.1, 4 May 2013
+
+`var` now supports multiple assignments    
+Refactored `array` and `object` to generate cleaner code  
+Overall cleaner code generated      
+
 ### Version 0.3.0, 24 Apr 2013
 
 Dropped support for older browsers. (Cleaner code)  
