@@ -30,7 +30,7 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Version 0.3.2, 24 Jun 2013
 
-Removed dependency on amd-loader. Use broserify for browser.   
+Removed dependency on amd-loader. Use browserify for browser.   
 Removed dependency on underscorejs  
 Refactored code  
 
