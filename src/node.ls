@@ -1,7 +1,12 @@
-(var
-  fs (require "fs")
-  ls (require "./ls")
-  filename (require.resolve "../src/macros.ls")
-  code (fs.readFileSync filename "utf8"))
+(var fs (require "fs")
+     ls (require "../lib/ls"))
 
-(ls._compile code filename)
+;; Register `.ls` file extension so that `ls`
+;; modules can be simply required.
+(set require.extensions[".ls"]
+  (function (module filename)
+    (var code (fs.readFileSync filename "utf8"))
+    (module._compile (ls._compile code filename) filename)))
+
+;; Load macros to be included into a compiler.
+(require "../src/macros")
