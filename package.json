@@ -25,6 +25,6 @@
     "url": "git://github.com/santoshrajan/lispyscript.git"
   },
   "scripts": {
-    "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/node.ls lib/node.js && lispy src/browser.ls lib/browser.js"
+    "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && lispy src/browser.ls lib/browser.js"
   }
 }

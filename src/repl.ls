@@ -1,6 +1,6 @@
 ;; A very simple REPL written in LispyScript
 
-(require "./node")
+(require "./require")
 (var readline (require "readline")
      ls (require "../lib/ls")
      prefix "lispy> ")

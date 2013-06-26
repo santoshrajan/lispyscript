@@ -1,6 +1,6 @@
-(require "./node")
+(require "./require")
 (var fs (require "fs")
-     ls (require "../lib/ls")
+     ls (require "./ls")
      repl (require "./repl")
      isValidFlag /-h\b|-r\b|-v\b/
      error
