@@ -28,6 +28,11 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.3.3, 26 Jun 2013
+
+Added support for requiring '.ls' files.  
+Require lispyscript files in javascript  
+
 ### Version 0.3.2, 24 Jun 2013
 
 Removed dependency on amd-loader. Use browserify for browser.   
