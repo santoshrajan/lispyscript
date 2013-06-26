@@ -87,6 +87,9 @@
               <a href="#macros">Macros</a>
             </li>
             <li>
+              <a href="#modules">Modules</a>
+            </li>
+            <li>
               <a href="#monads">Monads</a>
             </li>
             <li>
@@ -376,6 +379,27 @@ For that we use '~@vals'.</p>
 <p>We don't really need 'let' in LispyScript. We have 'var'. But if you need it, you can extend LispyScript
 by adding this macro to your code. Thats the power of macros. You can
 extend the language itself or create your own domain specific language.</p>
+
+
+<a name="modules"></a>        
+<h2 style="padding-top:40px">Modules</h2>
+
+<p>You can write nodejs style modules in LispyScript and require them in LispyScript or JavaScript.</p>
+<pre>
+mymodule.ls
+===========
+
+(set module.exports
+  (function (x) (* x x)))
+
+main.js
+=======
+
+require("lispyscript/lib/require")
+var square = require("./mymodule")
+console.log(square(2))
+
+</pre>
 
 
 <a name="monads"></a>        

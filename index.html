@@ -161,6 +161,7 @@
           <li><a href="./docs/#sequence">Callback Sequences</a></li>
           <li><a href="./docs/#templates">Templates</a></li>
           <li><a href="./docs/#monads">Monads</a></li>
+          <li><a href="./docs/#modules">Modules</a></li>
           <li><a href="./docs/#testing">Unit Testing</a></li>
           <li><a href="./docs/#browser">Browser Compatible</a></li>
         </ul>
@@ -183,6 +184,12 @@ $ npm link
         <pre>$ lispy test.ls</pre>
         <h5>Compile 'test.ls' to 'test.js' in another folder</h5>
         <pre>$ lispy src/test.ls lib/test.js</pre>
+        <h5>Require LispyScript modules in JavaScript</h5>
+        <pre>require("lispyscript/lib/require")
+var foo = require("./bar")</pre>
+        <h5>Require LispyScript modules in LispyScript</h5>
+        <pre>(require "lispyscript/lib/require")
+(var foo (require "./bar"))</pre>
         <h5>More Options</h5>
         <pre>$ lispy -h
 
