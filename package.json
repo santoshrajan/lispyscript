@@ -3,7 +3,7 @@
   "description": "A JavaScript with Lispy Syntax and Macros",
   "keywords": ["javascript", "language", "lispyscript", "compiler", "lisp"],
   "author": "Santosh Rajan",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "licenses": [{
     "type": "MIT",
     "url": "https://raw.github.com/santoshrajan/lispyscript/master/LICENSE"
@@ -24,7 +24,12 @@
     "type": "git",
     "url": "git://github.com/santoshrajan/lispyscript.git"
   },
+  "devDependencies": {
+    "browserify": ">2.14.1",
+    "tinix": ">=0.0.3",
+    "dopromise": ">=0.0.4"
+  },
   "scripts": {
-    "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && lispy src/browser.ls lib/browser.js"
+    "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && browserify lib/browser.js -o lib/browser-bundle.js"
   }
 }
