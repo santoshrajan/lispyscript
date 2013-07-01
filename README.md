@@ -28,6 +28,10 @@ Irakli Gozalishvili [Gozala](https://github.com/Gozala).
 
 ### Change Log
 
+### Version 0.3.5, 1 Jul 2013
+
+Added browser example in examples folder.  
+
 ### Version 0.3.4, 29 Jun 2013
 
 Added browser support for lispyscript via browserify.  
