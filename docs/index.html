@@ -621,7 +621,10 @@ which will be shown at the top of your test results. It returns the test results
 <p>You can run LispyScript directly in the browser. However this will not be as fast a precompiling LispyScript on the server and loading the compiled JavaScript.</p>
 <p>The examples folder has a browser example in the browser folder. Download the LispyScript project as a <a href="https://github.com/santoshrajan/lispyscript/archive/master.zip">zip file</a>. Extract the file and copy the "examples/browser" folder to a suitable location inside your server root. Browse to the path on your server. If all goes well you will see a number 4 alerted. Note that you can not open the index.html as a file, because LispyScript modules are loaded via XHR.</p>
 
-<pre><code>&lt;!DOCTYPE html&gt;
+<pre><code>
+index.html
+==========
+&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
   &lt;title&gt;LispyScript Browser Example&lt;/title&gt;
@@ -645,6 +648,12 @@ which will be shown at the top of your test results. It returns the test results
     &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;
+
+square.ls
+---------
+(set module.exports (function (x)
+  (* x x)))
+
 </code></pre>
 
 <ul>
