@@ -1,20 +1,40 @@
-;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
+require=(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({"tinix":[function(require,module,exports){
+module.exports=require('tOMLoq');
+},{}],"tOMLoq":[function(require,module,exports){
 // tinix.js
 //
 // Copyright 2013 - Santosh Rajan - santoshrajan.com
 //
 
 
-Element.prototype.on = Element.prototype.addEventListener
+if (!Element.prototype.on) Element.prototype.on = Element.prototype.addEventListener
 
 var tinix = function(id) {
     return document.querySelector(id)
 }
 
-tinix.version = "0.0.3"
+tinix.version = "0.0.6"
 
 tinix.all = function(id) {
     return document.querySelectorAll(id)
+}
+
+tinix.forEach = function(s, f) {
+    Array.prototype.forEach.call(this.all(s), f)
+}
+
+tinix.map = function(s, f) {
+    return Array.prototype.map.call(this.all(s), f)
+}
+
+tinix.style = function(s, n, v) {
+    this.forEach(s, function(elem) {
+       elem.style[n] = v
+    })
+}
+
+tinix.display = function(s, v) {
+    this.style(s, "display", v)
 }
 
 tinix.ready = function(f) {
@@ -27,25 +47,25 @@ tinix.ready = function(f) {
     }
 }
 
-tinix.getR = function(s, f) {
+tinix.getR = function(c) {
     var r = new XMLHttpRequest()
     r.onload = function() {
         if (r.status == 200) {
             if (r.getResponseHeader("Content-Type") == "application/json") {
-                s(JSON.parse(r.responseText))
+                c(null, JSON.parse(r.responseText))
             } else {
-                s(r.responseText)
+                c(null, r.responseText)
             }
         } else {
-            f(r)
+            c(r)
         }
     }
     return r
 }
 
-// get(url, success, failure [,overrideMimeType])
-tinix.get = function(u, s, f, o) {
-    var r = this.getR(s, f)
+// get(url, callback [,overrideMimeType])
+tinix.get = function(u, c, o) {
+    var r = this.getR(c)
     r.open("GET", u)
     if (o) {
       r.overrideMimeType(o)
@@ -53,17 +73,17 @@ tinix.get = function(u, s, f, o) {
     r.send()
 }
 
-// post(url, body, contenttype, success, failure)
-tinix.post = function(u, b, c, s, f) {
-    var r = this.getR(s, f)
+// post(url, body, contenttype, callback)
+tinix.post = function(u, b, t, c) {
+    var r = this.getR(c)
     r.open("POST", u)
-    r.setRequestHeader("Content-Type", c)
+    r.setRequestHeader("Content-Type", t)
     r.send(b)
 }
 
-// postJSON(url, body, success, failure)
-tinix.postJSON = function(u, b, s, f) {
-    this.post(u, JSON.stringify(b), "application/json", s, f)
+// postJSON(url, body, callback)
+tinix.postJSON = function(u, b, c) {
+    this.post(u, JSON.stringify(b), "application/json", c)
 }
 
 /*\
@@ -123,68 +143,9 @@ tinix.cookies = {
 module.exports = tinix
 
 
-},{}],2:[function(require,module,exports){
-/*
-    dopromise
-    Promise Library for JavaScript
-    Copyright (c) 2013 Santosh Rajan
-    License - MIT - https://github.com/santoshrajan/dopromise/blob/master/LICENSE
-*/
-
-(function(exports){
-
-    var serial = function() {
-        var args = arguments, scope = {}
-        function iterator(i) {
-            var func = args[i]
-            if (args.length === i + 1) {
-                func.call(scope)
-            } else {
-                func.call(scope, function() {
-                    iterator(i + 1)
-                })
-            }
-        }
-        iterator(0);
-    }
-
-    var parallel = function() {
-        var args = Array.prototype.slice.call(arguments),
-            last = args.pop()
-            counter = args.length
-            scope = {}
-            done = function() {
-                --counter
-                if (counter === 0) {
-                    last.call(scope)
-                }
-            }
-
-        args.forEach(function(f) {
-            f.call(scope, done)
-        })
-    }
-
-    var loop = function(f) {
-        var scope = {}
-        function iterator() {
-            f.call(scope, iterator)
-        }
-        iterator()
-    }
-
-    exports.version = "0.0.4"
-    exports.doPromise = serial  // for backward compatability
-    exports.serial = serial
-    exports.parallel = parallel
-    exports.loop = loop
-
-})(typeof exports === 'undefined'? this.dopromise={}: exports);
-
-},{}],3:[function(require,module,exports){
+},{}],1:[function(require,module,exports){
 var $  = require("tinix"),
     ls = require("lispyscript"),
-    promise = require("dopromise"),
     cache = {}
 
 function createHandler(script) {
@@ -194,14 +155,15 @@ function createHandler(script) {
         } else {
             $.get(
                 script.src,
-                function(ls) {
-                    script.ls = ls
+                function(err, ls) {
+                    if (err) {
+                        console.log("Error loading file " + script.src)
+                    } else {
+                        script.ls = ls
+                    }
                     done()
                 },
-                function(request) {
-                    throw new Error("Failed to load file " + script.src)
-                },
-                "test/plain"
+                "text/plain"
             )
         }
     }
@@ -214,7 +176,11 @@ function runModule(js) {
             if (cache[name]) {
                 return cache[name]
             } else {
-                return window.require(name)
+                if (window.require) {
+                    return window.require(name)
+                } else {
+                    throw new Error("Cannot find module " + name)
+                }
             }
         }
 
@@ -222,23 +188,37 @@ function runModule(js) {
     return module.exports
 }
 
+function doParallel(handlers, callback) {
+    var counter = handlers.length
+        done = function() {
+            --counter
+            if (counter === 0) {
+                callback()
+            }
+        }
+
+    handlers.forEach(function(f) {
+        f(done)
+    })
+}
+
+
 $.ready(function() {
-    var scripts = Array.prototype.map.call($.all("script[type='text/lispyscript']"), function(script) {
+    var scripts = $.map("script[type='text/lispyscript']", function(script) {
         return {id: script.id, src: script.src, ls: script.src ? null : script.innerHTML}
     })
     var handlers = scripts.map(function(script) {
         return createHandler(script)
     })
-    handlers.push(function() {
+    doParallel(handlers, function() {
         scripts.forEach(function(script) {
             script.js = ls._compile(script.ls, script.src)
             cache[script.id] = runModule(script.js)
         })
     })
-    promise.parallel.apply(null, handlers)
 })
 
-},{"tinix":1,"dopromise":2,"lispyscript":4}],4:[function(require,module,exports){
+},{"tinix":"tOMLoq","lispyscript":2}],2:[function(require,module,exports){
 (function(__dirname){/*
  *
 LispyScript - Javascript using tree syntax!
@@ -827,9 +807,9 @@ exports.version = version
 exports._compile = compile
 
 
-})("/../../../node_modules/lispyscript/lib")
-},{"fs":5}],5:[function(require,module,exports){
+})("/../../node_modules/lispyscript/lib")
+},{"fs":3}],3:[function(require,module,exports){
 // nothing to see here... no file methods for the browser
 
-},{}]},{},[3])
+},{}]},{},[1])
 ;
