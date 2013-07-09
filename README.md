@@ -13,7 +13,7 @@ Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
 * Templates
 * Callback Sequence (avoid nested callbacks)
 * Monads 
-* Browser compatible 
+* Run in browser  
 * Unit test feature
 
 
@@ -27,6 +27,10 @@ Santosh Rajan [santoshrajan](https://github.com/santoshrajan).
 Irakli Gozalishvili [Gozala](https://github.com/Gozala).  
 
 ### Change Log
+
+### Version 0.3.6, 11 Jul 2013
+
+Simplified browser usage.  
 
 ### Version 0.3.5, 1 Jul 2013
 

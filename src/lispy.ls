@@ -2,14 +2,14 @@
 (var fs (require "fs")
      ls (require "./ls")
      repl (require "./repl")
-     isValidFlag /-h\b|-r\b|-v\b/
+     isValidFlag /-h\b|-r\b|-v\b|-b\b/
      error
        (function (err)
          (console.error err.message)
          (process.exit 1)))
 
 (var help_str "
-Usage: lispy [-h] [-r] [<infile>] [<outfile>]
+Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
 
        Also compile stdin to stdout
        eg. $ echo '(console.log \"hello\")' | lispy
@@ -18,6 +18,7 @@ Usage: lispy [-h] [-r] [<infile>] [<outfile>]
        -h                Show this help
        -r                Compile and run
        -v                Show Version
+       -b                Create browser-bundle.js in same folder.
        <infile>          Input file to compile
        <outfile>         Output JS file. If not given
                          <outfile> will be <infile> with .js extension\n")
@@ -77,6 +78,12 @@ Usage: lispy [-h] [-r] [<infile>] [<outfile>]
     (cond 
       (= "-h" flag) (do (console.log help_str) null)
       (= "-v" flag) (do (console.log (+ "Version " ls.version)) null)
+      (= "-b" flag) (do
+                      (var bundle
+                        (require.resolve "lispyscript/lib/browser-bundle.js"))
+                      ((.pipe (fs.createReadStream bundle))
+                        (fs.createWriteStream "browser-bundle.js"))
+                      null)
       (= "-r" flag) true)
   
 
