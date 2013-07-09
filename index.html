@@ -172,12 +172,6 @@
           <a href='http://nodejs.org'>Node.js</a> Installed.</div>
         <h5>Install Using npm</h5>
         <pre>$ npm install -g lispyscript</pre>
-        <h5>Or install from latest source</h5>
-        <pre>
-$ git clone git@github.com:santoshrajan/lispyscript.git
-$ cd path/to/lispyscript
-$ npm link
-</pre>
         <h3>Usage</h3>
         <h5>Run a simple LispyScript REPL</h5>
         <pre>$ lispy</pre>
@@ -194,7 +188,7 @@ var foo = require("./bar")</pre>
         <h5>More Options</h5>
         <pre>$ lispy -h
 
-Usage: lispy [-h] [-r] [&lt;infile&gt;] [&lt;outfile&gt;]
+Usage: lispy [-h] [-r] [-v] [-b] [&lt;infile&gt;] [&lt;outfile&gt;]
 
        Also compile stdin to stdout
        eg. $ echo '(console.log "hello")' | lispy
@@ -203,6 +197,8 @@ Usage: lispy [-h] [-r] [&lt;infile&gt;] [&lt;outfile&gt;]
        -h                Show this help
        -r                Compile and run
        -v                Show Version
+       -b                Create browser-bundle.js
+                         in the same folder.
        &lt;infile&gt;          Input file to compile
        &lt;outfile&gt;         Output JS file. If not given
                          &lt;outfile&gt; will be &lt;infile&gt; 

@@ -619,9 +619,16 @@ which will be shown at the top of your test results. It returns the test results
 <h2 style="padding-top:40px">Running in Browser</h2>
 
 <p>You can run LispyScript directly in the browser. However this will not be as fast a precompiling LispyScript on the server and loading the compiled JavaScript.</p>
-<p>The examples folder has a browser example in the browser folder. Download the LispyScript project as a <a href="https://github.com/santoshrajan/lispyscript/archive/master.zip">zip file</a>. Extract the file and copy the "examples/browser" folder to a suitable location inside your server root. Browse to the path on your server. If all goes well you will see a number 4 alerted. Note that you can not open the index.html as a file, because LispyScript modules are loaded via XHR.</p>
+<p>Below is an example on how to use lispyscript in the browser.</p>
 
 <pre><code>
+// You need to include browser-bundle.js in your html. Go to your js folder and
+// type the following command
+$ lispy -b
+// This will create browser-bundle.js in that folder.
+// The example below will alert "4" on the browser. The source of the index.html and
+// square.ls is given below. You must open index.html from a server.
+
 index.html
 ==========
 &lt;!DOCTYPE html&gt;
@@ -631,7 +638,6 @@ index.html
 
   &lt;script type=&quot;text/javascript&quot; src=&quot;./js/browser-bundle.js&quot;&gt;&lt;/script&gt;
 
-  &lt;script type=&quot;text/lispyscript&quot; id=&quot;macros&quot; src=&quot;./src/macros.ls&quot;&gt;&lt;/script&gt;
   &lt;script type=&quot;text/lispyscript&quot; id=&quot;square&quot; src=&quot;./src/square.ls&quot;&gt;&lt;/script&gt;
 
 &lt;script type=&quot;text/lispyscript&quot; id=&quot;main&quot;&gt;
@@ -658,12 +664,11 @@ square.ls
 
 <ul>
   <li>Load the "./js/browser-bundle.js" in first.</li>
-  <li>Load "./src/macros.ls". All LispyScript files must have type "text/lispyscript".</li>
   <li>Load your own ".ls" files. Each ".ls" file must have an id.</li>
   <li>Each LispyScript script tag is treated as a nodejs module. This is unlike JavaScript where every script is loaded in the global scope.</li>
   <li>The "id" is used to "require" the module in a subsequent module. In the example above we have one ".ls" file loaded ("square.ls"), and the last one is inline. The last module requires the "square" module.</li>
-  <li>All modules are loaded and run on load. So you need to explicitly require a LispyScript module only if it exports something. This is unlike nodejs where you need to explicitly "require" every module. In the example above we don't "require" macros anywhere.</li>
-  <li>Ideally you should give your modules the an "id" which is same as what the require statement on the server side would use. This is important so that the same module can be compiled on the server without any changes if required.</li>
+  <li>All modules are loaded and run on load. So you need to explicitly require a LispyScript module only if it exports something. This is unlike nodejs where you need to explicitly "require" every module.</li>
+  <li>Ideally you should give your modules an "id" which is same as what the require statement on the server side would use. This is important so that the same module can be compiled on the server without any changes if required.</li>
 </ul>
          
 <a name="browser"></a>
