@@ -61,6 +61,21 @@ var lispyscript = function() {
         ((true === (false === (Object.prototype.toString.call(null) === "[object Object]"))) ?
             ("Passed - " + "(false? (object? null))") :
             ("Failed - " + "(false? (object? null))")),
+        ((true === (6 === (1 + 2 + 3))) ?
+            ("Passed - " + "variadic arithmetic operator") :
+            ("Failed - " + "variadic arithmetic operator")),
+        ((true === (true === (3 > 2 && 2 > 1))) ?
+            ("Passed - " + "variadic >") :
+            ("Failed - " + "variadic >")),
+        ((true === (true === (1 === 1 && 1 === 1))) ?
+            ("Passed - " + "variadic =") :
+            ("Failed - " + "variadic =")),
+        ((true === (false === (1 !== 1 && 1 !== 2))) ?
+            ("Passed - " + "variadic !=") :
+            ("Failed - " + "variadic !=")),
+        ((true === (true === (true && true && true))) ?
+            ("Passed - " + "variadic logical operator") :
+            ("Failed - " + "variadic logical operator")),
         ((true === (10 === (true ?
                 (function() {
                     var ret = 10;
