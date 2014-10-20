@@ -26,6 +26,11 @@
 (assert (object? {}) "(object? {})")
 (assert (false? (object? [])) "(object? [])")
 (assert (false? (object? null)) "(false? (object? null))")
+(assert (= 6 (+ 1 2 3)) "variadic arithmetic operator")
+(assert (= true (> 3 2 1)) "variadic >")
+(assert (= true (= 1 1 1)) "variadic =")
+(assert (= false (!= 1 1 2)) "variadic !=")
+(assert (= true (&& true true true)) "variadic logical operator")
 (assert
   (= 10
     (when true
