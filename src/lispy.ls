@@ -111,12 +111,8 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
   js
     (try
       (fs.writeFileSync outfile
-        (if withSourceMap
-          (ls._compileWithSourceMap
-            (fs.readFileSync infile "utf8")
-          infile withSourceMap)
         (ls._compile (fs.readFileSync infile "utf8")
-          infile))
+          infile withSourceMap)
       "utf8")
       (if run run null)
       (function (err)
