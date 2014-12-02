@@ -8,21 +8,22 @@
          (console.error err.message)
          (process.exit 1)))
 
-(var help_str "
-Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
-
-       Also compile stdin to stdout
-       eg. $ echo '(console.log \"hello\")' | lispy
-
-       <no arguments>    Run REPL
-       -h                Show this help
-       -r                Compile and run
-       -v                Show Version
-       -b                Create browser-bundle.js in same folder.
-       -s                Create source-map
-       <infile>          Input file to compile
-       <outfile>         Output JS file. If not given
-                         <outfile> will be <infile> with .js extension\n")
+(var opt (->
+  (require 'node-getopt')
+  (.create [['h', 'help', 'display this help'],
+    ['v', 'version', 'show version'],
+    ['r', 'run', 'compile and run'],
+    ['b', 'browser-bundle', 'create browser-bundle.js in the same directory'],
+    ['m', 'map', 'generate source map files'],
+    ['i', 'include-dir=ARG+', 'add directory to include search path']])
+  (.setHelp (+ "lispy [OPTION] [<infile>] [<outfile>]\n\n"
+               "<outfile> will default to <infile> with '.js' extension\n\n"
+              "Also compile stdin to stdout\n"
+              "eg. $ echo '(console.log \"hello\")' | lispy\n\n"
+              "[[OPTIONS]]\n\n"))
+  (.bindHelp)
+  (.parseSystem)
+))
 
 ;; We use maybe monad to carry out each step, so that we can
 ;; halt the operation anytime in between if needed.
@@ -30,16 +31,13 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
 (doMonad maybeMonad
 
   ;; Start maybe Monad bindings
-  ;; First step get args without the first two (node and lispy).
-  (args (process.argv.slice 2)
-
-  ;; get the first arg
-  arg1 (args.shift)
 
   ;; when no args do stdin -> stdout compile or run repl and return null to
   ;; halt operations.
-  noargs
-    (when (undefined? arg1)
+  (noargs
+    (when (&&
+              (= opt.argv.length 0)
+              (= (.length (Object.keys opt.options)) 0))
       (var input process.stdin)
       (var output process.stdout)
       (input.resume)
@@ -65,42 +63,29 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
               (repl.runrepl)))) 20)
       null)
 
-  ;; If arg1 = flag verify valid flag and halt if not otherwise
-  ;; set arg1 to next arg in args
-  flag
-    (when (= "-" (get 0 arg1))
-      (var flag arg1)
-      (set arg1 (args.shift))
-      (if (isValidFlag.test flag)
-        flag
-        (error (new Error (+ "Error: Invalid flag " flag)))))
-
   run
     (cond 
-      (= "-h" flag) (do (console.log help_str) null)
-      (= "-v" flag) (do (console.log (+ "Version " ls.version)) null)
-      (= "-b" flag) (do
-                      (var bundle
-                        (require.resolve "lispyscript/lib/browser-bundle.js"))
-                      ((.pipe (fs.createReadStream bundle))
-                        (fs.createWriteStream "browser-bundle.js"))
+      (true? opt.options['version']) (do (console.log (+ "Version " ls.version)) null)
+      (true? opt.options['browser-bundle'])
+          (do
+            (var bundle
+              (require.resolve "lispyscript/lib/browser-bundle.js"))
+              ((.pipe (fs.createReadStream bundle))
+              (fs.createWriteStream "browser-bundle.js"))
                       null)
-      (= "-r" flag) true)
+      (true? opt.options['run']) true)
   
 
   ;; if infile undefined
   infile
-    (if arg1
-      arg1 
+    (if opt.argv[0]
+      opt.argv[0]
       (error (new Error "Error: No Input file given")))
-
-  withSourceMap
-    (= flag "-s")
 
   ;; set outfile args.shift. ! outfile set outfile to infile(.js) 
   outfile 
     (do
-      (var outfile (args.shift))
+      (var outfile opt.argv[1])
       (unless outfile
         (set outfile (infile.replace /\.ls$/ ".js"))
         (if (= outfile infile)
@@ -112,7 +97,7 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
     (try
       (fs.writeFileSync outfile
         (ls._compile (fs.readFileSync infile "utf8")
-          infile withSourceMap)
+          infile (true? opt.options['map']) opt.options['include-dir'])
       "utf8")
       (if run run null)
       (function (err)
