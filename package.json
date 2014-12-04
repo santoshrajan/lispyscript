@@ -30,10 +30,11 @@
     "brfs": ">=0.0.6"
   },
   "scripts": {
-    "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && browserify -t brfs lib/browser.js > lib/browser-bundle.js"
+    "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && browserify -t brfs lib/browser.js > lib/browser-bundle.js && lispy test/test.ls"
   },
   "preferGlobal": true,
   "dependencies" : {
-    "source-map": ">= 0.1.40"
+    "source-map": ">= 0.1.40",
+    "node-getopt": ">=0.2.3"
   }
 }
