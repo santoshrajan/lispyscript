@@ -23,7 +23,8 @@ Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
 
 ### Contributors
 
-Santosh Rajan [santoshrajan](https://github.com/santoshrajan).  
+Santosh Rajan [santoshrajan](https://github.com/santoshrajan).   
+Balaji Rao [balajirrao] (https://github.com/balajirrao).   
 Irakli Gozalishvili [Gozala](https://github.com/Gozala).  
 
 ### Change Log
