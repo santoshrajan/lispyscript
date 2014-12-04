@@ -2,7 +2,7 @@
 (var fs (require "fs")
      ls (require "./ls")
      repl (require "./repl")
-     isValidFlag /-h\b|-r\b|-v\b|-b\b/
+     isValidFlag /-h\b|-r\b|-v\b|-b\b|-s\b/
      error
        (function (err)
          (console.error err.message)
@@ -19,6 +19,7 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
        -r                Compile and run
        -v                Show Version
        -b                Create browser-bundle.js in same folder.
+       -s                Create source-map
        <infile>          Input file to compile
        <outfile>         Output JS file. If not given
                          <outfile> will be <infile> with .js extension\n")
@@ -93,6 +94,9 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
       arg1 
       (error (new Error "Error: No Input file given")))
 
+  withSourceMap
+    (= flag "-s")
+
   ;; set outfile args.shift. ! outfile set outfile to infile(.js) 
   outfile 
     (do
@@ -107,9 +111,8 @@ Usage: lispy [-h] [-r] [-v] [-b] [<infile>] [<outfile>]
   js
     (try
       (fs.writeFileSync outfile
-        (ls._compile 
-          (fs.readFileSync infile "utf8")
-        infile)
+        (ls._compile (fs.readFileSync infile "utf8")
+          infile withSourceMap)
       "utf8")
       (if run run null)
       (function (err)

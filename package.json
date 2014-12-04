@@ -32,5 +32,8 @@
   "scripts": {
     "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && browserify -t brfs lib/browser.js > lib/browser-bundle.js"
   },
-  "preferGlobal": true
+  "preferGlobal": true,
+  "dependencies" : {
+    "source-map": ">= 0.1.40"
+  }
 }
