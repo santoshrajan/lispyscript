@@ -54,9 +54,8 @@
 
 (console.log (str "Hello1" " world1"))
 
-(var link
-  (template (data)
-    "<li><a href=" (.href data) ">" (.text data) "</a></li>\n"))
+(template link (data)
+  "<li><a href=" (.href data) ">" (.text data) "</a></li>\n")
 
 
 (template page (title links)

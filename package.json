@@ -1,20 +1,28 @@
 {
   "name": "lispyscript",
   "description": "A JavaScript with Lispy Syntax and Macros",
-  "keywords": ["javascript", "language", "lispyscript", "compiler", "lisp"],
+  "keywords": [
+    "javascript",
+    "language",
+    "lispyscript",
+    "compiler",
+    "lisp"
+  ],
   "author": "Santosh Rajan",
   "version": "0.3.6",
-  "licenses": [{
-    "type": "MIT",
-    "url": "https://raw.github.com/santoshrajan/lispyscript/master/LICENSE"
-  }],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/santoshrajan/lispyscript/master/LICENSE"
+    }
+  ],
   "engines": {
     "node": ">=0.4.0"
   },
-  "directories" : {
-    "lib" : "./lib"
+  "directories": {
+    "lib": "./lib"
   },
-  "main" : "./lib/ls",
+  "main": "./lib/ls",
   "bin": {
     "lispy": "./bin/lispy.js"
   },
@@ -27,14 +35,15 @@
   "devDependencies": {
     "browserify": ">2.14.1",
     "tinix": ">=0.0.3",
-    "brfs": ">=0.0.6"
+    "brfs": ">=0.0.6",
+    "underscore": "^1.8.2"
   },
   "scripts": {
     "prepublish": "lispy src/lispy.ls lib/lispy.js && lispy src/repl.ls lib/repl.js && lispy src/require.ls lib/require.js && browserify -t brfs lib/browser.js > lib/browser-bundle.js && lispy test/test.ls"
   },
   "preferGlobal": true,
-  "dependencies" : {
-    "source-map": ">= 0.1.40",
-    "node-getopt": ">=0.2.3"
+  "dependencies": {
+    "node-getopt": ">=0.2.3",
+    "source-map": ">= 0.1.40"
   }
 }
