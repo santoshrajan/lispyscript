@@ -2,6 +2,12 @@
 (template testTemplate (one two three)
   "1" one "2" two "3" three)
 
+;; A couple named (as opposed to anonymous) functions
+(function namedFn (x y) 
+  (+ x y))
+(function namedFnNoSpaceBeforeArgs(x y) 
+  (- x y))
+
 ;; Def testgroup name - lispyscript
 ;; tests lispyscript expressions
 
@@ -145,17 +151,21 @@
       (doMonad arrayMonad (a [1,2,0,null,3]) (when a a))
       (function (accum val) (+ accum val))
       0)) "arrayMonad when null values test")
-
+(assert 
+  (= 13 
+    (namedFn 7 6)) "named function test")
+(assert 
+  (= 7 
+    (namedFnNoSpaceBeforeArgs 13 6)) "named function no space test")
 )
 
 ;; Function for running on browser. This function is for
 ;; the test.html file in the same folder.
-(var browserTest
-  (function ()
-    (var el (document.getElementById "testresult"))
-    (if el.outerHTML
-      (set el.outerHTML (str "<pre>" (testRunner lispyscript "LispyScript Testing") "</pre>"))
-      (set el.innerHTML (testRunner lispyscript "LispyScript Testing")))))
+(function browserTest ()
+  (var el (document.getElementById "testresult"))
+  (if el.outerHTML
+    (set el.outerHTML (str "<pre>" (testRunner lispyscript "LispyScript Testing") "</pre>"))
+    (set el.innerHTML (testRunner lispyscript "LispyScript Testing"))))
 
 ;; If not running on browser
 ;; call test runner with test group lispysript

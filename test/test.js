@@ -2,6 +2,12 @@
 var testTemplate = function(one,two,three) {
     return ["1",one,"2",two,"3",three].join('');
 };
+function namedFn(x,y) {
+    return (x + y);
+}
+function namedFnNoSpaceBeforeArgs(x,y) {
+    return (x - y);
+}
 var lispyscript = function() {
     return [
         ((true === (true === true)) ?
@@ -454,10 +460,16 @@ var lispyscript = function() {
                 return (accum + val);
             },0))) ?
             ("Passed - " + "arrayMonad when null values test") :
-            ("Failed - " + "arrayMonad when null values test"))
+            ("Failed - " + "arrayMonad when null values test")),
+        ((true === (13 === namedFn(7,6))) ?
+            ("Passed - " + "named function test") :
+            ("Failed - " + "named function test")),
+        ((true === (7 === namedFnNoSpaceBeforeArgs(13,6))) ?
+            ("Passed - " + "named function no space test") :
+            ("Failed - " + "named function no space test"))
     ];
 };
-var browserTest = function() {
+function browserTest() {
     var el = document.getElementById("testresult");
     return (el.outerHTML ?
         el.outerHTML = ["<pre>",(function(groupname,desc) {
@@ -488,7 +500,7 @@ var browserTest = function() {
                 return (___memo + [elem,"\n"].join(''));
             },""),"\nTotal tests ",tests.length,"\nPassed ",passed,"\nFailed ",failed,"\nDuration ",(new Date() - start),"ms\n"].join('');
         })(lispyscript,"LispyScript Testing"));
-};
+}
 ((typeof(window) === "undefined") ?
     console.log((function(groupname,desc) {
         var start = new Date(),
