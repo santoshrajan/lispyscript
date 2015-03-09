@@ -23,85 +23,77 @@
 
 (var bricks (arrayInit2d 5 7 null))
 
-(var init
-  (function ()
-    (set paddleX (/ canvas.width 2))
-    (set ballX 40)
-    (set ballY 150)
-    (set ballVx 7)
-    (set ballVy 12)
-    (each2d bricks
-      (function (val i j arr)
-        (set i arr true)))))
+(function init ()
+  (set paddleX (/ canvas.width 2))
+  (set ballX 40)
+  (set ballY 150)
+  (set ballVx 7)
+  (set ballVy 12)
+  (each2d bricks
+    (function (val i j arr)
+      (set i arr true))))
 
-(var clear
-  (function ()
-    (context.clearRect 0 0 canvas.width canvas.height)))
+(function clear()
+  (context.clearRect 0 0 canvas.width canvas.height))
 
-(var circle
-  (function (x y)
-    (context.beginPath)
-    (context.arc x y 10 0 (* 2 Math.PI))
-    (context.fill)))
+(function circle(x y)
+  (context.beginPath)
+  (context.arc x y 10 0 (* 2 Math.PI))
+  (context.fill))
 
-(var drawPaddle
-  (function ()
-    (var x (- paddleX (/ paddleWidth 2)))
-    (var y (- canvas.height paddleHeight))
-    (context.fillRect x y paddleWidth paddleHeight)))
+(function drawPaddle ()
+  (var x (- paddleX (/ paddleWidth 2)))
+  (var y (- canvas.height paddleHeight))
+  (context.fillRect x y paddleWidth paddleHeight))
 
-(var drawBricks
-  (function ()
-    (each2d bricks
-      (function (val x y arr)
-        (if val
-          (do
-            (var xpos (+ (* x brickWidth) (/ brickMargin 2)))
-            (var ypos (+ (* y brickHeight) (/ brickMargin 2)))
-            (var width (- brickWidth brickMargin))
-            (var height (- brickHeight brickMargin))
-            (context.fillRect xpos ypos width height)))))))
-
-(var hitHorizontal
-  (function ()
-    (if (|| (< ballX 0) (> ballX canvas.width))
-      (set ballVx -ballVx))))
-
-(var hitVertical
-  (function ()
-    (cond
-      (< ballY 0) (do (set ballVy -ballVy) true)
-      (< ballY (* brickHeight bricksNumY))
+(function drawBricks ()
+  (each2d bricks
+    (function (val x y arr)
+      (if val
         (do
-          (var bx (Math.floor (/ ballX brickWidth)))
-          (var by (Math.floor (/ ballY brickHeight)))
-          (if (&& (>= bx 0) (< bx bricksNumX))
-            (if (get bx (get by bricks))
-              (do
-                (set bx (get by bricks) false)
-                (set ballVy -ballVy))))
-          true)
-      (>= ballY (- canvas.height paddleHeight))
-        (do
-          (var paddleLeft (- paddleX (/ paddleWidth 2)))
-          (var paddleRight (+ paddleX (/ paddleWidth 2)))
-          (if (&& (>= ballX paddleLeft) (<= ballX paddleRight))
-            (do (set ballVy -ballVy) true)
-            (do (init) false)))
-      true true)))
+          (var xpos (+ (* x brickWidth) (/ brickMargin 2)))
+          (var ypos (+ (* y brickHeight) (/ brickMargin 2)))
+          (var width (- brickWidth brickMargin))
+          (var height (- brickHeight brickMargin))
+          (context.fillRect xpos ypos width height))))))
 
-(var tick
-  (function ()
-    (clear)
-    (drawPaddle)
-    (set ballX (+ ballX ballVx))
-    (set ballY (+ ballY ballVy))  
-    (hitHorizontal)
-    (if (hitVertical)
+(function hitHorizontal ()
+  (if (|| (< ballX 0) (> ballX canvas.width))
+    (set ballVx -ballVx)))
+
+(function hitVertical ()
+  (cond
+    (< ballY 0) (do (set ballVy -ballVy) true)
+    (< ballY (* brickHeight bricksNumY))
       (do
-        (circle ballX ballY)
-        (drawBricks))
-      (clear))))
+        (var bx (Math.floor (/ ballX brickWidth)))
+        (var by (Math.floor (/ ballY brickHeight)))
+        (if (&& (>= bx 0) (< bx bricksNumX))
+          (if (get bx (get by bricks))
+            (do
+              (set bx (get by bricks) false)
+              (set ballVy -ballVy))))
+        true)
+    (>= ballY (- canvas.height paddleHeight))
+      (do
+        (var paddleLeft (- paddleX (/ paddleWidth 2)))
+        (var paddleRight (+ paddleX (/ paddleWidth 2)))
+        (if (&& (>= ballX paddleLeft) (<= ballX paddleRight))
+          (do (set ballVy -ballVy) true)
+          (do (init) false)))
+    true true))
+
+(function tick ()
+  (clear)
+  (drawPaddle)
+  (set ballX (+ ballX ballVx))
+  (set ballY (+ ballY ballVy))  
+  (hitHorizontal)
+  (if (hitVertical)
+    (do
+      (circle ballX ballY)
+      (drawBricks))
+    (clear)))
 
 (set window.onload (function (event)
   (set canvas ($ "breakout"))
