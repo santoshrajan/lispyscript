@@ -27,6 +27,15 @@ Santosh Rajan [santoshrajan](https://github.com/santoshrajan).
 Balaji Rao [balajirrao] (https://github.com/balajirrao).   
 Irakli Gozalishvili [Gozala](https://github.com/Gozala).  
 
+### Note to Contributors
+
+To build all generated files and run the unit tests do:
+
+  npm run-script prepublish
+
+If browserify fails to find your lispyscript module -
+Consider adding the location of your lispyscript repo directory on your $NODE_PATH.
+
 ### Change Log
 
 ### Version 0.3.6, 11 Jul 2013
