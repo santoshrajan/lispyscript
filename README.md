@@ -14,6 +14,7 @@ Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
 * Callback Sequence (avoid nested callbacks)
 * Monads 
 * Run in browser  
+* Server-side and Browser-side REPLs
 * Unit test feature
 
 
@@ -26,6 +27,7 @@ Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
 Santosh Rajan [santoshrajan](https://github.com/santoshrajan).   
 Balaji Rao [balajirrao] (https://github.com/balajirrao).   
 Irakli Gozalishvili [Gozala](https://github.com/Gozala).  
+Darren Cruse [darrencruse](https://github.com/darrencruse)
 
 ### Note to Contributors
 
