@@ -1,32 +1,149 @@
-This directory contains a copy of the "Run in the browser" example at:
+RUNNING THE EXAMPLES
+
+Here are some lispyscript examples that run in node.js, in the browser, or both.
+
+* Running in node.js
+
+Lispyscript is a transpiler i.e. a compiler that translates from lispyscript to javascript.
+
+The compiler command is named "lispy" (and actually - "lispy" does more than just compiling).
+
+To see all of lispy's options enter (in a shell window):
+
+  lispy --help
+
+To run one of the examples in node you can start by compiling the .ls file e.g.:
+
+  lispy snippets.ls
+
+This will produce the file "snippets.js".
+
+Then you can run the javascript file with node:
+
+  node snippets.js
+
+Alternatively, you can run from .ls files directly using the lispy command in lieu of node with:
+
+  lispy -r snippets.ls
+
+Note:  "lispy -r" currently only works with simple examples which don't require other modules.
+
+* Running in the browser:
+
+As mentioned at lispyscript.com lispy can (optionally) compile and run lispyscript code right in the browser.
+
+See e.g. the "Run in the browser" example at:
 
     http://lispyscript.com/docs/#browserrunning
 
-Note that (as mentioned on that web page above) to run this example you must first:
+Note that compiling in the browser is not recommended for production use as there's a performance overhead.
 
-  a.  Create the browser-bundle.js file.
+Yet you may find it useful for debugging or experimentation.
 
-  To do this cd to the "js" sub-directory and run the command:
+The "runinbrowser" directory here contains a copy of the example above.
 
-    lispy -b
+To run this or other such "in browser" examples you must serve the files from a web server.
 
-  This will copy browser-bundle.js to the current directory.
+If you simply open the index.html file directly you will get an error due to cross origin ajax requests.
 
-b.  Serve index.html using some type of web server.
-
-  Note this is required to run this example.
-
-  If you simply open the index.html file directly you will get an error due to cross origin ajax requests.
-
-  You can serve index.html from any web server you like - if you don't have one handy you can simply do:
+You can serve index.html from any web server you like - if you don't have one handy you can simply do:
 
     npm install http-server -g
 
-  Then while in this "runinbrowser" example directory simply run:
+Then from the root of the examples directory simply run:
 
-    http-server
+    http-server .
 
-  Then just hit in your browser the url:
+Then to run an example hit it from your browser e.g.:
 
-    http://localhost:8080/index.html
+    http://localhost:8080/runinbrowser/index.html
+
+(if "browser-bundle.js" isn't found, make sure your web server is pointed at "examples" as it's doc root directory).
+
+Additional note to lispyscript developers:
+
+  The checked-in lib/browser-bundle.js file has been linked under the examples directory.
+
+  There is no longer a need to do "lispy -b" to get a copy of browser-bundle.js when testing an example.
+
+  Simply build the new browser-bundle.js file using e.g. "npm run prepublish".
+
+
+* Trying the in-browser REPL
+
+A version of the breakout game is also provided as a "run in browser" example.
+
+This example is also setup with the "in-browser repl".
+
+When served from a web server you hit this example with:
+
+    http://localhost:8080/breakout/inbrowser.html
+
+Once the page is displayed and running, hitting ctrl-v should open the repl at the right of your page.
+
+(hitting ctrl-x would have opened it at the bottom)
+
+A prompt should display where you can enter lispyscript commands much the same as the server-side "lispy" repl.
+
+With the breakout game running see what happens when you enter e.g.:
+
+    (set ballY 0)
+
+Now you see - the in-browser repl is a way to cheat!! :)
+
+If you were debugging this program, you might like to pause the game while you inspect it.  Try:
+
+    (set pause true)
+
+See what the current paddle position is by entering:
+
+    paddleX
+
+Try rendering the next frame by entering e.g.:
+
+    (drawFrame)
+
+Up arrow and re-run "(drawFrame)" three times.  The ball should advance with each frame.
+
+Start the game running again by entering:
+
+    (set pause false)
+
+Note:  The "pause" option is not part of the in-browser repl, that's a feature of the game's code.
+
+Hit ctrl-v (or ctrl-x) again to toggle the repl closed.
+
+You can toggle it open or closed as many times as you like, your command history will be remembered unless you refresh the page.
+
+* Considerations re: "Run in browser" Modules versus Global Scoping:
+
+The "inbrowser.html" version of the breakout game includes it's lispyscript inline in a script tag like: 
+
+    <script type="text/lispyscript">(game code)</script>
+
+This is not required to use the in-browser repl, it was just done for demonstration.
+
+It would have worked just as well with an external .ls file like:
+
+    <script type="text/lispyscript" id="breakout" src="breakout.ls"></script>
+
+That style is used in the other example here in the "runinbrowser" directory.
+
+Note however this script tag includes an "id" we did not include in our breakout example's script tag.
+
+When you give an "id" you're saying to hide the variables of the code exactly as a node.js ("CommonJS") module would.
+
+We chose to omit the "id" in the breakout example which is why the repl could see the game variables directly.
+
+If we hadn't, we'd have had to do additional things at our repl command line like:
+
+    (var breakout (require 'breakout'))
+
+And defined a variable like "breakout" as a handle to access exported module variables.
+
+If using the module style with "id", you might remove the "id" while using the in-browser repl, but put it back for production.
+
+Or you might choose (as we've done in this example) to simply not use the "module" concept, especially for simple examples or a demo.
+
+(thus making your in-browser lispyscript variables globally scoped, as javascript has traditionally been, for better and for worse!!)
 
