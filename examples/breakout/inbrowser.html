@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Breakout Game</title>
+
+	<link rel="stylesheet" type="text/css" href="breakout.css">
+
+	<!-- for the in-browser repl -->
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://terminal.jcubic.pl/js/jquery.terminal-src.js"></script>
+	<script src="http://terminal.jcubic.pl/js/jquery.mousewheel-min.js"></script>
+	<link href="http://terminal.jcubic.pl/css/jquery.terminal.css" rel="stylesheet"/>
+
+	<!-- for in browser lispyscript translation -->
+	<script type="text/javascript" src="../browser-bundle.js"></script>
+
+	<!-- this example shows the lispyscript in one page -->
+	<!-- note no "id" here means this is plain (top level) code (i.e. not a commonJS module) -->
+	<script type="text/lispyscript">
+
+	;; The breakout game written in LispyScript
+        ;; See examples/README for instructions how to run it
+	;; Requires canvas support in browser
+	;; Based on javascript version here http://www.jsdares.com/
+	;;
+
+	(macro $listener (domObj eventName rest...)
+	  ((.addEventListener ~domObj) ~eventName
+	    (function (event)
+	    ~rest...)))
+
+	(var canvas null)
+	(var context null)
+	(var bricksNumX 7)
+	(var bricksNumY 5)
+	(var brickWidth null)
+	(var brickHeight 20)
+	(var brickMargin 4)
+	(var paddleWidth 80)
+	(var paddleHeight 12)
+	(var paddleX 0)
+	(var ballX 0)
+	(var ballY 0)
+	(var ballVx 0)
+	(var ballVy 0)
+	(var pause false)
+
+	(var bricks (arrayInit2d 5 7 null))
+
+	(function init ()
+	  (set paddleX (/ canvas.width 2))
+	  (set ballX 40)
+	  (set ballY 150)
+	  (set ballVx 7)
+	  (set ballVy 12)
+	  (each2d bricks
+	    (function (val i j arr)
+	      (set i arr true))))
+
+	(function clear()
+	  (context.clearRect 0 0 canvas.width canvas.height))
+
+	(function circle(x y)
+	  (context.beginPath)
+	  (context.arc x y 10 0 (* 2 Math.PI))
+	  (context.fill))
+
+	(function drawPaddle ()
+	  (var x (- paddleX (/ paddleWidth 2)))
+	  (var y (- canvas.height paddleHeight))
+	  (context.fillRect x y paddleWidth paddleHeight))
+
+	(function drawBricks ()
+	  (each2d bricks
+	    (function (val x y arr)
+	      (if val
+	        (do
+	          (var xpos (+ (* x brickWidth) (/ brickMargin 2)))
+	          (var ypos (+ (* y brickHeight) (/ brickMargin 2)))
+	          (var width (- brickWidth brickMargin))
+	          (var height (- brickHeight brickMargin))
+	          (context.fillRect xpos ypos width height))))))
+
+	(function hitHorizontal ()
+	  (if (|| (< ballX 0) (> ballX canvas.width))
+	    (set ballVx -ballVx)))
+
+	(function hitVertical ()
+	  (cond
+	    (< ballY 0) (do (set ballVy -ballVy) true)
+	    (< ballY (* brickHeight bricksNumY))
+	      (do
+	        (var bx (Math.floor (/ ballX brickWidth)))
+	        (var by (Math.floor (/ ballY brickHeight)))
+	        (if (&& (>= bx 0) (< bx bricksNumX))
+	          (if (get bx (get by bricks))
+	            (do
+	              (set bx (get by bricks) false)
+	              (set ballVy -ballVy))))
+	        true)
+	    (>= ballY (- canvas.height paddleHeight))
+	      (do
+	        (var paddleLeft (- paddleX (/ paddleWidth 2)))
+	        (var paddleRight (+ paddleX (/ paddleWidth 2)))
+	        (if (&& (>= ballX paddleLeft) (<= ballX paddleRight))
+	          (do (set ballVy -ballVy) true)
+	          (do (init) false)))
+	    true true))
+
+	(function tick ()
+	  (when !pause
+		  (drawFrame)))
+
+	(function drawFrame ()
+	  (clear)
+	  (drawPaddle)
+	  (set ballX (+ ballX ballVx))
+	  (set ballY (+ ballY ballVy))  
+	  (hitHorizontal)
+	  (if (hitVertical)
+	    (do
+	      (circle ballX ballY)
+	      (drawBricks))
+	    (clear)))
+
+	(set window.onload (function (event)
+	  (set canvas (document.getElementById "breakout"))
+	  (set context (canvas.getContext "2d"))
+	  (set brickWidth (/ canvas.width bricksNumX))
+	  ($listener canvas "mousemove" (set paddleX (|| event.offsetX (- event.pageX canvas.offsetLeft))))
+	  (init)
+	  (window.setInterval tick 30)))
+
+	((.ready ($ document)) (function ()
+		((.enableBrowserRepl (require "lispyscript")))))
+
+	</script>
+
+</head>
+<body>
+	<div id="wrapper">
+		<canvas id="breakout" width="450" height="450"></canvas>
+	</div>
+	<!--script type="text/javascript" src="breakout.js"></script-->
+</body>
+</html>
