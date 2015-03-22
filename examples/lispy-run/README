@@ -1,0 +1,55 @@
+
+LISPY RUN EXAMPLE
+
+This (boring) example is really just a test that the "lispy -r" command works in all situations.
+
+(i.e. with all permutations of ".ls" and ".js" file types being "required" as modules)
+
+To run it you simply do:
+
+  lispy -r lispy-run.ls
+
+The different "require" scenarios can be tested by uncommenting some of the requires
+in the .ls files here, along with using "lispy <file>" to compile .js files
+when needed.
+
+RATIONALE
+
+These tests were added in response to issue #53 in which the lispy command changed slightly:
+
+a. "lispy" alone is the way to compile .ls files to .js files one at a time.
+b. "lispy -r" is for running .ls files directly without explicitly creating .js files.
+c. "lispy -w" is for "watching" .ls file changes and automatically compiling to .js files.
+
+Note that b and c are largely two different ways of thinking about how to use lispyscript
+on the server.
+
+If you do "lispy -w" to generate .js files, you can simply run your main .js file with the 
+node command.
+
+Alternatively with "lispy -r" you might never create .js files and use the .ls files
+alone.
+ 
+Note when using using "lispy -r", if you've omitted a module's file extension like e.g.:
+
+    (require "subtract")
+
+This will load "substract.js" if it exists, even if it's older than "subtract.ls".
+
+If this concerns you, explicitly specify the file extension:
+
+    (require "subtract.ls")
+
+To guarantee your latest "subtract.ls" code is used, even if a "subtract.js" file exists.
+
+You might likewise want to add *.js in your .gitignore file if you're a "lispy -r" kind of person.
+
+OTOH you might enjoy the flexibility using requires without the ".ls" extension gives you
+to switch from using "lispy -r" without having to change these file extensions in your code.
+
+e.g. This way you can deploy just the generated .js files alone without the .ls files.  You can
+easily use node-inspector against the generated javascript (without the need for source maps) etc.
+
+Consider using "lispy -w" in these cases to ensure your generated .js files stay up to date with 
+recently modified .ls files.
+
