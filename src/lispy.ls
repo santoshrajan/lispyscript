@@ -1,5 +1,6 @@
 (require "./require")
 (var fs (require "fs")
+     path (require "path")
      ls (require "./ls")
      repl (require "./repl")
      isValidFlag /-h\b|-r\b|-v\b|-b\b|-s\b/
@@ -12,7 +13,7 @@
   (require 'node-getopt')
   (.create [['h', 'help', 'display this help'],
     ['v', 'version', 'show version'],
-    ['r', 'run', 'compile and run'],
+    ['r', 'run', 'run .ls files directly'],
     ['b', 'browser-bundle', 'create browser-bundle.js in the same directory'],
     ['m', 'map', 'generate source map files'],
     ['i', 'include-dir=ARG+', 'add directory to include search path']])
@@ -63,7 +64,7 @@
               (repl.runrepl)))) 20)
       null)
 
-  run
+  compile
     (cond 
       (true? opt.options['version']) (do (console.log (+ "Version " ls.version)) null)
       (true? opt.options['browser-bundle'])
@@ -73,9 +74,22 @@
               ((.pipe (fs.createReadStream bundle))
               (fs.createWriteStream "browser-bundle.js"))
                       null)
-      (true? opt.options['run']) true)
+      (true? opt.options['run']) 
+          ;; run specified .ls file (directly with no explicit .js file)
+          (do
+            (var infile
+              (if opt.argv[0]
+                ;; we require .ls extension (our require extension depends on it!)
+                (if (&& (= (opt.argv[0].indexOf '.ls') -1) (= (opt.argv[0].indexOf '.js') -1))
+                  (error (new Error "Error: Input file must have extension '.ls' or '.js'"))
+                  opt.argv[0])
+                (error (new Error "Error: No Input file given"))))
+            ;; by running the file via require we ensure that any other
+            ;; requires within infile work (and process paths correctly)
+            (require infile)
+            null)
+        true true) ;; no other options - go ahead and compile
   
-
   ;; if infile undefined
   infile
     (if opt.argv[0]
@@ -90,21 +104,15 @@
         (set outfile (infile.replace /\.ls$/ ".js"))
         (if (= outfile infile)
           (error (new Error "Error: Input file must have extension '.ls'"))))
-      outfile)
+      outfile))
 
-  ;; compile infile to outfile. if not run return null.
-  js
-    (try
-      (fs.writeFileSync outfile
-        (ls._compile (fs.readFileSync infile "utf8")
-          infile (true? opt.options['map']) opt.options['include-dir'])
-      "utf8")
-      (if run run null)
-      (function (err)
-        (error err)
-        null)))                     ;; end of maybe Monad bindings
-
-  ;; we are here if -r true, so run it!
-  (->
-    (require "child_process")
-    (.spawn "node" [outfile] {stdio: "inherit"})))
+  ;; compile infile to outfile.
+  (try
+    (console.log 'LispyScript Compiler v0.3.6:' infile 'to' outfile)
+    (fs.writeFileSync outfile
+      (ls._compile (fs.readFileSync infile "utf8")
+        infile (true? opt.options['map']) opt.options['include-dir'])
+    "utf8")
+    (function (err)
+      (error err)
+      null)))                     ;; end of maybe Monad bindings
