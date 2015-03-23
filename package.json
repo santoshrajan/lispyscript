@@ -44,6 +44,7 @@
   "preferGlobal": true,
   "dependencies": {
     "node-getopt": ">=0.2.3",
-    "source-map": ">= 0.1.40"
+    "source-map": ">= 0.1.40",
+    "watch": ">= 0.14.0"
   }
 }
