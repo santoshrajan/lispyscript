@@ -3,6 +3,7 @@
      path (require "path")
      ls (require "./ls")
      repl (require "./repl")
+     watch (require "watch")
      isValidFlag /-h\b|-r\b|-v\b|-b\b|-s\b/
      error
        (function (err)
@@ -14,6 +15,7 @@
   (.create [['h', 'help', 'display this help'],
     ['v', 'version', 'show version'],
     ['r', 'run', 'run .ls files directly'],
+    ['w', 'watch', 'watch and compile changed files beneath current directory'],
     ['b', 'browser-bundle', 'create browser-bundle.js in the same directory'],
     ['m', 'map', 'generate source map files'],
     ['i', 'include-dir=ARG+', 'add directory to include search path']])
@@ -88,7 +90,32 @@
             ;; requires within infile work (and process paths correctly)
             (require infile)
             null)
-        true true) ;; no other options - go ahead and compile
+      (true? opt.options['watch'])
+          (do
+            (var cwd (process.cwd))
+            (console.log 'Watching' cwd 'for .ls file changes...')
+            (watch.watchTree cwd 
+              { 
+                filter: function(f, stat) { return (stat.isDirectory() || f.indexOf('.ls') !== -1); },
+                ignoreDotFiles: true,
+                ignoreDirectoryPattern: /node_modules/
+              } 
+              (function (f curr prev) 
+                (cond
+                  (&& curr (!= curr.nlink 0))
+                    (->
+                      (require "child_process")
+                      (.spawn "lispy" [f.substring(cwd.length+1)] {stdio: "inherit"}))
+                  (&& (object? f) (null? prev) (null? curr))
+                    (eachKey f 
+                      (function (stat initialf) 
+                        (unless (= initialf cwd)
+                          (->
+                            (require "child_process")
+                            (.spawn "lispy" [initialf.substring(cwd.length+1)] {stdio: "inherit"}))))))))
+                          
+              null)
+      true true) ;; no other options - go ahead and compile
   
   ;; if infile undefined
   infile
@@ -108,7 +135,7 @@
 
   ;; compile infile to outfile.
   (try
-    (console.log 'LispyScript Compiler v0.3.6:' infile 'to' outfile)
+    (console.log 'LispyScript v0.3.6:  compiling' infile 'to' outfile)
     (fs.writeFileSync outfile
       (ls._compile (fs.readFileSync infile "utf8")
         infile (true? opt.options['map']) opt.options['include-dir'])
