@@ -95,11 +95,10 @@
             (var cwd (process.cwd))
             (console.log 'Watching' cwd 'for .ls file changes...')
             (watch.watchTree cwd 
-              { 
-                filter: function(f, stat) { return (stat.isDirectory() || f.indexOf('.ls') !== -1); },
-                ignoreDotFiles: true,
-                ignoreDirectoryPattern: /node_modules/
-              } 
+              (object 
+                filter (function (f stat) (|| (stat.isDirectory) (!= (f.indexOf '.ls') -1)))
+                ignoreDotFiles true
+                ignoreDirectoryPattern /node_modules/ ) 
               (function (f curr prev) 
                 (cond
                   (&& curr (!= curr.nlink 0))
