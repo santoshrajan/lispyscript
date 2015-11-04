@@ -31,11 +31,15 @@ Darren Cruse [darrencruse](https://github.com/darrencruse)
 
 ### Note to Contributors
 
-To build all generated files and run the unit tests do:
+To build and run the tests do:
+
+  npm test
+
+To build all generated files (including the browser bundle) do:
 
   npm run-script prepublish
 
-If browserify fails to find your lispyscript module -
+Note if browserify fails to find your lispyscript module -
 Consider adding the location of your lispyscript repo directory on your $NODE_PATH.
 
 ### Change Log
