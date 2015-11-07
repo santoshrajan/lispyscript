@@ -134,7 +134,7 @@
 
   ;; compile infile to outfile.
   (try
-    (console.log 'LispyScript v0.3.6:  compiling' infile 'to' outfile)
+    (console.log 'LispyScript v1.0.0:  compiling' infile 'to' outfile)
     (fs.writeFileSync outfile
       (ls._compile (fs.readFileSync infile "utf8")
         infile (true? opt.options['map']) opt.options['include-dir'])
