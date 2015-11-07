@@ -77,3 +77,5 @@
 (app.get "/"
   (function (req res)
     (res.send (basePage "LispyScript" (navBarLinks) (bodyContent)))))
+
+(console.log "Server running at http://localhost:3000/")
