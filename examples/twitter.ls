@@ -3,6 +3,7 @@
 
 ;; The express server
 (var express (require "express"))
+(var bodyParser (require "body-parser"))
 (var app (express))
 (app.listen 3000)
 
@@ -39,8 +40,8 @@
 (app.get "/"
   (function (req res)
     (res.send (base "Our Own Twitter" "Our Own Twitter" (index)))))
-    
-(app.post "/send" (express.bodyParser)
+   
+(app.post "/send" (bodyParser)  
   (function (req res)
     (if (&& req.body req.body.tweet)
       (do
@@ -51,4 +52,6 @@
 (app.get "/tweets"
   (function (req res)
     (res.send tweets)))
+
+(console.log "Listening on port 3000")
 
