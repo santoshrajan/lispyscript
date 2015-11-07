@@ -9,7 +9,7 @@
     "lisp"
   ],
   "author": "Santosh Rajan",
-  "version": "0.3.6",
+  "version": "1.0.0",
   "licenses": [
     {
       "type": "MIT",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "browserify": ">2.14.1",
-    "tinix": ">=0.0.3",
+    "tinix": "<=0.0.15",
     "brfs": ">=0.0.6",
     "underscore": "^1.8.2"
   },

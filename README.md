@@ -44,6 +44,15 @@ Consider adding the location of your lispyscript repo directory on your $NODE_PA
 
 ### Change Log
 
+### Version 1.0.0, 6 Nov 2015
+
+Added sitemap support.
+Added in browser repl.
+Added watch option to lispy command.
+Improved run option for lispy command.
+
+Simplified browser usage.
+
 ### Version 0.3.6, 11 Jul 2013
 
 Simplified browser usage.  
