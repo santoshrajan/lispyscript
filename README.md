@@ -1,7 +1,6 @@
 # LispyScript
 
-#### For Overview, documentation, usage, try it, examples see
-#### [http://lispyscript.com](http://lispyscript.com)
+## This package is no longer supported. Do not use.
 
 ## A Javascript with Lispy syntax and Macros!
 Lispyscript is Javascript using a 'Lispy' syntax, and compiles to Javascript.
